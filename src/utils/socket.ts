@@ -16,8 +16,8 @@ class SocketManager {
   sessionData: any = null;
 
   constructor() {
-    this.socket = io("http://192.168.1.14:8080/chatbot"); // Initialize the socket connection
-    // this.socket = io("https://wss.yourgpt.ai/chatbot"); // Initialize the socket connection
+    // this.socket = io("http://192.168.1.14:8080/chatbot"); // Initialize the socket connection
+    this.socket = io("https://wss.yourgpt.ai/chatbot"); // Initialize the socket connection
   }
 
   emitEvent(eventName: string, data: any) {

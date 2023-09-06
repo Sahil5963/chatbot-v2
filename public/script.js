@@ -1,3 +1,5 @@
+const ENDPOINT = "https://chatbot-v2-henna.vercel.app";
+
 const scriptTag = document.getElementById("yourgpt-chatbot");
 const config = JSON.parse(scriptTag.getAttribute("data-config"));
 
@@ -10,20 +12,18 @@ root.style.position = "fixed";
 root.id = "yourgpt_root";
 const gptSc = document.createElement("script");
 
-gptSc.src = "http://localhost:4173/chatbot.js";
+gptSc.src = ENDPOINT + "/chatbot.js";
 
-appendCSSFileToHead("http://localhost:4173/chatbot.css");
+appendCSSFileToHead(ENDPOINT + "/chatbot.css");
 
 document.body.appendChild(root);
 document.body.appendChild(gptSc);
 
+// HELPERS
 function appendCSSFileToHead(cssFilePath) {
-  // Create a link element for the CSS file
   const linkElement = document.createElement("link");
   linkElement.rel = "stylesheet";
   linkElement.type = "text/css";
   linkElement.href = cssFilePath;
-
-  // Append the link element to the head of the document
   document.head.appendChild(linkElement);
 }

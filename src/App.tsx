@@ -1,17 +1,15 @@
-import Chatbot from "components/Chatbot";
-import ChatbotFrame from "components/ChatbotFrame";
-import WidgetButton from "components/WidgetButton";
+import { NextUIProvider } from "@nextui-org/system";
+import Root from "components/Root";
 import ChatbotProvider from "context/ChatbotContext";
 
 export default function App() {
   return (
     <div className="ygpt-chatbot">
-      <ChatbotProvider>
-        <ChatbotFrame>
-          <Chatbot />
-        </ChatbotFrame>
-        <WidgetButton />
-      </ChatbotProvider>
+      <NextUIProvider>
+        <ChatbotProvider>
+          <Root />
+        </ChatbotProvider>
+      </NextUIProvider>
     </div>
   );
 }

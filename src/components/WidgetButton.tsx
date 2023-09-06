@@ -2,17 +2,20 @@ import ChatbotLogo from "./logos/Chatbot";
 import { FaChevronDown } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useChatbot } from "context/ChatbotContext";
+import { THEME } from "utils/constants/ui";
 
 export default function WidgetButton() {
-  const { chatbotPopup, setChatbotPopup } = useChatbot();
+  const { chatbotPopup, setChatbotPopup, chatbotSettings, unseenCount } = useChatbot();
 
   return (
     <div
       onClick={() => setChatbotPopup((s) => !s)}
-      className="ygpt-h-[48px] ygpt-w-[48px] ygpt-rounded-full ygpt-text-white ygpt-bg-blue-700 ygpt-fixed ygpt-flex ygpt-justify-center ygpt-items-center hover:ygpt-scale-105 ygpt-transition-all ygpt-cursor-pointer active:ygpt-scale-[0.88] [&>span]:ygpt-absolute "
+      className="ygpt-h-[48px] ygpt-w-[48px] ygpt-rounded-full  ygpt-fixed ygpt-flex ygpt-justify-center ygpt-items-center hover:ygpt-scale-105 ygpt-transition-all ygpt-cursor-pointer active:ygpt-scale-[0.88] [&>span]:ygpt-absolute "
       style={{
         right: "20px",
         bottom: "20px",
+        color: chatbotSettings?.widget_text_color || THEME.textOnPrimary,
+        background: chatbotSettings?.widget_color || THEME.primaryColor,
       }}
     >
       <AnimatePresence>
@@ -23,6 +26,8 @@ export default function WidgetButton() {
         ) : (
           <motion.span key={2} exit={{ opacity: 0, scale: 0.2, rotate: 60 }} initial={{ opacity: 0, scale: 0.2, rotate: 60 }} animate={{ opacity: 1, scale: 1, rotate: 0 }}>
             <ChatbotLogo />
+
+            {unseenCount > 0 && <div className="ygpt-absolute ygpt-top-[-20px] ygpt-right-[-12px] ygpt-bg-orange-600 ygpt-rounded-full ygpt-h-[24px] ygpt-aspect-square ygpt-flex ygpt-justify-center ygpt-items-center">{unseenCount}</div>}
           </motion.span>
         )}
       </AnimatePresence>

@@ -49,13 +49,7 @@ export default function ActionBar() {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
             if (text.trim().length === 0) return;
-            sendMessage({
-              id: Date.now(),
-              text,
-              type: "text",
-              sent: true,
-              loadingStatus: "finished",
-            });
+            sendMessage(text);
             setText("");
           }
         }}
@@ -65,6 +59,10 @@ export default function ActionBar() {
         className={` ygpt-cursor-pointer hover:ygpt-bg-blue-100 ygpt-text-blue-600  ygpt-h-[38px] ygpt-aspect-square ygpt-rounded-full ygpt-overflow-hidden ygpt-flex ygpt-justify-center ygpt-items-center ygpt-absolute ygpt-right-1  ${
           text ? "ygpt-scale-100 ygpt-opacity-100" : "ygpt-scale-[0.5] ygpt-opacity-0 ygpt-pointer-events-none"
         } ygpt-transition-all ygpt-ease-in-quint`}
+        onClick={() => {
+          sendMessage(text);
+          setText("");
+        }}
       >
         <SendIcon size={24} />
       </div>

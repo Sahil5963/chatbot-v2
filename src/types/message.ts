@@ -1,7 +1,8 @@
-export type MessageD = {
-  type?: any;
-  text?: string;
-  sent?: boolean;
-  id?: any;
-  loadingStatus: "streaming" | "loading" | "finished" | "error";
+import { MessageEventResponse } from "./socket";
+
+export type MessageD = MessageEventResponse & {
+  loadingStatus?: "streaming" | "loading" | null;
+  createdAt: string | number | null;
+  links?: any[];
+  rated?: null | "1" | "0";
 };

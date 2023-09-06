@@ -22,14 +22,14 @@ const frameVariants = {
 };
 
 export default function ChatbotFrame({ children }: { children: React.ReactNode }) {
-  const { chatbotPopup } = useChatbot();
+  const { chatbotPopup, expanded } = useChatbot();
 
   return (
     <>
       <AnimatePresence>
         {chatbotPopup && (
           <Root
-            className={chatbotPopup && "show"}
+            className={`${chatbotPopup ? "show" : ""} ${expanded ? "big" : ""} `}
             variants={frameVariants}
             initial="hide"
             animate="show"
@@ -54,7 +54,8 @@ const Root = styled(motion.div)`
   right: 20px;
   height: min(704px, 100% - 104px);
   min-height: 80px;
-  width: 400px;
+  max-width: 400px;
+  width: 100%;
   max-height: 704px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 5px 40px;
   border-radius: 16px;
@@ -65,7 +66,11 @@ const Root = styled(motion.div)`
   /* pointer-events: none; */
   /* display: flex; */
   pointer-events: none;
+  transition: max-width 0.3s;
   &.show {
     pointer-events: all;
+  }
+  &.big {
+    max-width: min(800px, 100% - 104px);
   }
 `;

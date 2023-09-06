@@ -1,3 +1,5 @@
+import { parseStreamString } from "utils/helper";
+
 export const getStreamData = ({ url, onUpdate }: { url: string; onUpdate: (d: { res: string; error?: string; finished?: boolean; messageId?: string; links?: any[] }) => void }) => {
   let response = "";
 
@@ -6,7 +8,7 @@ export const getStreamData = ({ url, onUpdate }: { url: string; onUpdate: (d: { 
 
     source.onmessage = function (event) {
       response = response + event.data;
-      response = response.replaceAll("[LINE_END]", "\n").replaceAll("||", "|\n|").replaceAll(":|", "\n|");
+      response = parseStreamString(response);
 
       onUpdate({
         res: response,
@@ -29,12 +31,12 @@ export const getStreamData = ({ url, onUpdate }: { url: string; onUpdate: (d: { 
 
         onUpdate({
           res: response,
-          messageId: endRes.message_id,
+          messageId: endRes.id,
         });
       }
     });
     source.addEventListener("learnMoreLinks", (e: any) => {
-      let linkRes: any = {};
+      let linkRes: any = [];
       if (e) {
         linkRes = JSON.parse(e.data);
       }

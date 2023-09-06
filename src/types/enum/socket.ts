@@ -10,4 +10,5 @@ export enum SocketListenE {
   joined = "chatbot:session:joined",
   messageReceived = "chatbot:message:received",
   messageCompose = "chatbot:message:compose",
+  connect = "connect",
 }
