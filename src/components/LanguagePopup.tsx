@@ -1,5 +1,4 @@
 import { AnimatePresence, motion } from "framer-motion";
-import React from "react";
 import { BiSolidUpArrow } from "react-icons/bi";
 import { LANGUAGES } from "utils/constants";
 

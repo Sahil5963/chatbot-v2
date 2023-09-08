@@ -1,6 +1,5 @@
 import ChatbotLogo from "components/logos/Chatbot";
 import { useChatbot } from "context/ChatbotContext";
-import React from "react";
 import { MessageD } from "types/message";
 import { THEME } from "utils/constants/ui";
 import { BiSolidUserCircle } from "react-icons/bi";

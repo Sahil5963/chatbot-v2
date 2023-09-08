@@ -2,7 +2,6 @@ import Chatbot from "components/Chatbot";
 import ChatbotFrame from "components/ChatbotFrame";
 import WidgetButton from "components/WidgetButton";
 import { useChatbot } from "context/ChatbotContext";
-import { useState } from "react";
 
 export default function Root() {
   const { isFullPage } = useChatbot();

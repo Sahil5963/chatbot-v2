@@ -2,13 +2,13 @@ import ChatItem from "./ChatItem";
 import { useChatbot } from "context/ChatbotContext";
 import Header from "./Header";
 import Footer from "./Footer";
-import DefaultQuestions from "./DefaultQUestions";
-import { useEffect, useRef, useState } from "react";
+import DefaultQuestions from "./DefaultQuestions";
+import { useEffect, useRef } from "react";
 import { THEME } from "utils/constants/ui";
 import { ScrollDiv } from "components/styles";
 
 export default function Chatbot() {
-  const { messages, loadingStatus, chatbotSettings } = useChatbot();
+  const { messages, chatbotSettings } = useChatbot();
 
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   // const [userScrolledUp, setUserScrolledUp] = useState(false);

@@ -8,7 +8,6 @@ import { getChatbotCreds, getVisitorName, playSound } from "utils/helper";
 import { StorageManager } from "utils/storage";
 import { useSettings } from "hooks/useSettings";
 import { ChatbotSettingApiD } from "types";
-import { FULL_SCREEN_ROUTE } from "utils/constants";
 
 type LoadingStatus = "loading" | "typing" | null;
 

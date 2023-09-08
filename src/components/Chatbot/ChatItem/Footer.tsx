@@ -1,4 +1,3 @@
-import React from "react";
 import { MessageD } from "types/message";
 import { HIDE_FEEDBACK } from "utils/helper";
 import { HiThumbDown, HiThumbUp } from "react-icons/hi";
