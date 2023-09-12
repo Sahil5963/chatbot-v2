@@ -8,7 +8,7 @@ import { THEME } from "utils/constants/ui";
 import { ScrollDiv } from "components/styles";
 
 export default function Chatbot() {
-  const { messages, chatbotSettings } = useChatbot();
+  const { messages, chatbotSettings, rateMessage } = useChatbot();
 
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   // const [userScrolledUp, setUserScrolledUp] = useState(false);
@@ -42,18 +42,18 @@ export default function Chatbot() {
 
       <ScrollDiv
         color={chatbotSettings?.widget_color || THEME.primaryColor}
-        className="content ygpt-overflow-x-hidden   ygpt-overflow-y-auto ygpt-flex-1 ygpt-py-2 ygpt-flex ygpt-flex-col  ygpt-items-start ygpt-gap-3 "
+        className="content ygpt-overflow-x-hidden   ygpt-overflow-y-auto ygpt-flex-1 ygpt-py-2 ygpt-flex ygpt-flex-col  ygpt-items-start ygpt-gap-3"
         style={{ transition: `scroll-behavior 0.5s ease-in-out` }}
         ref={chatContainerRef}
         onScroll={handleScroll}
       >
-        {chatbotSettings?.welcome_message && <ChatItem createdAt={null} content={{ message: chatbotSettings?.welcome_message }} from="assistant" localId={"welcome"} />}
+        {chatbotSettings?.welcome_message && <ChatItem rateMessage={rateMessage} createdAt={null} content={{ message: chatbotSettings?.welcome_message }} from="assistant" localId={"welcome"} />}
 
         <DefaultQuestions />
 
         {/* MESSAGE LIST  */}
         {messages.map((i) => {
-          return <ChatItem key={i.localId || i.content.message_id} {...i} />;
+          return <ChatItem rateMessage={rateMessage} key={i.localId || i.content.message_id} {...i} />;
         })}
         {/* {loadingStatus && <>{loadingStatus === "loading" && <span>Loading.....</span>}</>} */}
       </ScrollDiv>

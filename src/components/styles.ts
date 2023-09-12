@@ -54,3 +54,20 @@ export const CursorBlink = styled.span`
     }
   }
 `;
+
+export const IconBtn = styled.button<{ color: string }>`
+  background: ${(p) => p.color + "00"};
+  color: ${(p) => p.color + "a1"};
+  height: 38px;
+  aspect-ratio: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 120px;
+  transition: all 0.2s;
+
+  &:hover {
+    background: ${(p) => p.color + "20"};
+    color: ${(p) => p.color + "ff"};
+  }
+`;

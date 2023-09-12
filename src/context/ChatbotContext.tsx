@@ -8,6 +8,8 @@ import { getChatbotCreds, getVisitorName, playSound } from "utils/helper";
 import { StorageManager } from "utils/storage";
 import { useSettings } from "hooks/useSettings";
 import { ChatbotSettingApiD } from "types";
+import { LayoutD } from "types/layout";
+import layoutJSON from "dummy/layout.json";
 
 type LoadingStatus = "loading" | "typing" | null;
 
@@ -37,6 +39,7 @@ type ChatbotContextType = {
   expanded: boolean;
   setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   unseenCount: number;
+  layout: LayoutD | null;
 };
 
 const ChatbotContext = React.createContext<ChatbotContextType>({} as ChatbotContextType);
@@ -67,6 +70,8 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
     return getChatbotCreds()?.fullPage ? true : false;
   });
 
+  const [layout, setLayout] = useState<LayoutD | null>(null);
+
   /**
    * CONFIG
    */
@@ -92,13 +97,11 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
 
   const [unseenCount, setUnseenCount] = useState(0);
 
-  // useEffect(() => {
-  //   const p = getChatbotCreds();
-  //   if (p) {
-  //     setChatbotUid(p.chatbotUid);
-  //     setWidgetUid(p.widgetUid);
-  //   }
-  // }, [isFullPage]);
+  useEffect(() => {
+    setTimeout(() => {
+      setLayout(layoutJSON as LayoutD);
+    }, 2000);
+  }, []);
 
   /**
    * EXTRA
@@ -322,19 +325,6 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
               createdAt: Date.now(),
             },
           ];
-          // } else {
-          //   const lIndex = s.length - 1;
-          //   const newMessages = [...s];
-          //   newMessages[lIndex] = {
-          //     ...newMessages[lIndex],
-          //     loadingStatus: "finished",
-          //     text: data.content?.message || "Sorry, I didn't get that. Can you please rephrase?",
-          //     type: "text",
-          //     sent: false,
-          //   };
-
-          //   return newMessages;
-          // }
         });
       }
     },
@@ -350,10 +340,6 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
   const handleConnected = useCallback(() => {
     setSocketState("connected");
   }, []);
-
-  useEffect(() => {
-    console.log("SOCKET STATE---------->", socketState);
-  }, [socketState]);
 
   useEffect(() => {
     socketManager.socket.on(SocketListenE.joined, handleJoined);
@@ -452,6 +438,7 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
         expanded,
         setExpanded,
         unseenCount,
+        layout,
       }}
     >
       {children}

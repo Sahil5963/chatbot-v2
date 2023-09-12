@@ -1,30 +1,28 @@
-import { useChatbot } from "context/ChatbotContext";
-
 import { THEME } from "utils/constants/ui";
 import { RiDeleteBin6Fill, RiExpandLeftLine, RiExpandRightLine } from "react-icons/ri";
 import { IoMdClose } from "react-icons/io";
 import { styled } from "styled-components";
 import { useIntl } from "react-intl";
+import { LayoutD } from "types/layout";
 
-export default function Header() {
-  const { clearSession, chatbotSettings, setExpanded, expanded, setChatbotPopup } = useChatbot();
+export default function ChatHeader({ layout, expanded, onExpanded, onClose, onClearSession }: { layout: LayoutD | null; onClearSession: () => void; expanded: boolean; onExpanded: () => void; onClose: () => void }) {
   // const [languagePopup, setLanguagePopup] = useState(false);
   const intl = useIntl();
 
   return (
-    <div className="ygpt-px-2 ygpt-py-3 ygpt-flex ygpt-justify-between ygpt-items-center" style={{ background: chatbotSettings?.widget_color || THEME.primaryColor, color: chatbotSettings?.widget_text_color }}>
+    <div className="ygpt-px-2 ygpt-py-3 ygpt-flex ygpt-justify-between ygpt-items-center" style={{ background: layout?.primaryColor || THEME.primaryColor, color: layout?.textOnPrimaryColor || THEME.textOnPrimary }}>
       {/* LEFT  */}
       <div className="left ygpt-flex ygpt-gap-2 ygpt-items-center">
-        <button onClick={() => setExpanded((s) => !s)} className="ygpt-opacity-50 hover:ygpt-opacity-100 ygpt-transition-all">
+        <button onClick={() => onExpanded()} className="ygpt-opacity-50 hover:ygpt-opacity-100 ygpt-transition-all">
           {expanded ? <RiExpandRightLine size={20} /> : <RiExpandLeftLine size={20} />}
         </button>
 
         <div className="avagar">
-          <img src={chatbotSettings?.logo} alt="Avatar" className="ygpt-h-[32px] ygpt-aspect-square" />
+          <img src={layout?.logo} alt="Avatar" className="ygpt-h-[32px] ygpt-aspect-square" />
         </div>
 
         <div className="content">
-          <h4 className="ygpt-font-medium ">{chatbotSettings?.name || "YourGPT"}</h4>
+          <h4 className="ygpt-font-medium ">{layout?.name || "YourGPT"}</h4>
           {intl.formatMessage({ id: "home.heading", defaultMessage: "Hello" })}
         </div>
       </div>
@@ -37,10 +35,10 @@ export default function Header() {
           </Btn>
           <LanguagePopup open={languagePopup} onClose={() => {}} />
         </div> */}
-        <Btn onClick={() => clearSession()} className="" bg={chatbotSettings?.widget_color || THEME.primaryColor} color={chatbotSettings?.widget_text_color || THEME.textOnPrimary}>
+        <Btn onClick={() => onClearSession()} className="" bg={layout?.primaryColor || THEME.primaryColor} color={layout?.textOnPrimaryColor || THEME.textOnPrimary}>
           <RiDeleteBin6Fill size={20} />
         </Btn>
-        <Btn onClick={() => setChatbotPopup(false)} className="" bg={chatbotSettings?.widget_color || THEME.primaryColor} color={chatbotSettings?.widget_text_color || THEME.textOnPrimary}>
+        <Btn onClick={() => onClose()} className="" bg={layout?.primaryColor || THEME.primaryColor} color={layout?.textOnPrimaryColor || THEME.textOnPrimary}>
           <IoMdClose size={20} />
         </Btn>
       </div>

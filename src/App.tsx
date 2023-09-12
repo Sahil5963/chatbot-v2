@@ -1,15 +1,18 @@
 import { NextUIProvider } from "@nextui-org/system";
-import Root from "components/Root";
 import ChatbotProvider from "context/ChatbotContext";
+import LanguageProvider from "context/LanguageProvider";
+import Screens from "screens";
 
 export default function App() {
   return (
-    <div className="ygpt-chatbot">
-      <NextUIProvider>
-        <ChatbotProvider>
-          <Root />
-        </ChatbotProvider>
-      </NextUIProvider>
-    </div>
+    <LanguageProvider>
+      <div className="ygpt-chatbot">
+        <NextUIProvider>
+          <ChatbotProvider>
+            <Screens />
+          </ChatbotProvider>
+        </NextUIProvider>
+      </div>
+    </LanguageProvider>
   );
 }

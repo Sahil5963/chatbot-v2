@@ -1,7 +1,6 @@
 import { useChatbot } from "context/ChatbotContext";
 import { motion } from "framer-motion";
 import { MessageD } from "types/message";
-import { padX } from "..";
 import TimeText from "components/TimeText";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -15,7 +14,7 @@ export default function ChatItem({ rateMessage, ...message }: MessageD & { rateM
   const { layout } = useChatbot();
 
   return (
-    <div className={`ygpt-flex ygpt-flex-col  ygpt-max-w-[90%] ${padX}  ${sent ? "ygpt-self-end ygpt-items-end" : "ygpt-self-start ygpt-items-start ygpt-mb-3"}`}>
+    <div className={`ygpt-flex ygpt-flex-col  ygpt-max-w-[90%] padX  ${sent ? "ygpt-self-end ygpt-items-end" : "ygpt-self-start ygpt-items-start ygpt-mb-3"}`}>
       <div className="header">
         <Header message={message} />
       </div>

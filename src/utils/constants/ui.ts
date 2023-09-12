@@ -3,3 +3,7 @@ export const THEME = {
   primaryColor: "#5648FF",
   textOnPrimary: "#fff",
 };
+
+export const tabsLayout = {
+  tabHeight: 62,
+};
