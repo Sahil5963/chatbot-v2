@@ -1,3 +1,5 @@
+import { WidgetLayoutD } from "./layout/global";
+
 export type ChatbotSettingApiD = {
   id: number;
   name: string;
@@ -24,6 +26,7 @@ export type ChatbotSettingApiD = {
   createdAt: string;
   updatedAt: string;
   widget_form_field: WidgetFormField[];
+  layout?: WidgetLayoutD | null;
 };
 
 export type WidgetFormField = {

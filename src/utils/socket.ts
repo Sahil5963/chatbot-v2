@@ -1,6 +1,6 @@
 import { io, Socket } from "socket.io-client";
-import { SocketEmitE } from "types/enum/socket";
-import { MessageFrom } from "types/socket";
+import { MessageFrom } from "../types/socket";
+import { SocketEmitE } from "../types/enum/socket";
 
 export type ComposePayload = {
   chatbot_uid: string;

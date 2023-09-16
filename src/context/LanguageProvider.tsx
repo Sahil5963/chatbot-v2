@@ -1,7 +1,7 @@
 import { ReactNode, createContext, useState } from "react";
 
-import Fr from "lang/fr.json";
-import En from "lang/en.json";
+import Fr from "../lang/fr.json";
+import En from "../lang/en.json";
 import { IntlProvider } from "react-intl";
 
 const local = navigator.language;
@@ -36,8 +36,6 @@ export default function LanguageProvider({ children }: { children: ReactNode }) 
       }
     }
   }
-
-  console.log("locale", locale);
 
   return (
     <LanguageContext.Provider value={{ selectLanguage }}>

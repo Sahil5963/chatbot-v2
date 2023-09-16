@@ -1,7 +1,7 @@
 import { NextUIProvider } from "@nextui-org/system";
-import ChatbotProvider from "context/ChatbotContext";
-import LanguageProvider from "context/LanguageProvider";
-import Screens from "screens";
+import LanguageProvider from "./context/LanguageProvider";
+import ChatbotProvider from "./context/ChatbotContext";
+import Widget from "./widget";
 
 export default function App() {
   return (
@@ -9,7 +9,7 @@ export default function App() {
       <div className="ygpt-chatbot">
         <NextUIProvider>
           <ChatbotProvider>
-            <Screens />
+            <Widget />
           </ChatbotProvider>
         </NextUIProvider>
       </div>
