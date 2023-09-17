@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { BiSolidUpArrow } from "react-icons/bi";
-import { LANGUAGES } from "utils/constants";
+import { LANGUAGES } from "../utils/constants/lang";
 
 export default function LanguagePopup({ open }: { open: boolean; onClose: () => void }) {
   return (

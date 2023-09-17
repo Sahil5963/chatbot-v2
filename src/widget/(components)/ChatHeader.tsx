@@ -2,8 +2,8 @@ import { RiDeleteBin6Fill, RiExpandLeftLine, RiExpandRightLine } from "react-ico
 import { IoMdClose } from "react-icons/io";
 import { styled } from "styled-components";
 import { useIntl } from "react-intl";
-import { THEME } from "../../utils/constants/ui";
 import { useWidget } from "../context/WidgetContext";
+import { YOUR_GPT_LAYOUT } from "../utils/constants";
 
 export default function ChatHeader({ expanded, onExpanded, onClose, onClearSession }: { onClearSession: () => void; expanded: boolean; onExpanded: () => void; onClose: () => void }) {
   // const [languagePopup, setLanguagePopup] = useState(false);
@@ -12,7 +12,10 @@ export default function ChatHeader({ expanded, onExpanded, onClose, onClearSessi
   const { layout, setting } = useWidget();
 
   return (
-    <div className="ygpt-px-2 ygpt-py-3 ygpt-flex ygpt-justify-between ygpt-items-center" style={{ background: layout?.colors.primary || THEME.primaryColor, color: layout?.colors.textOnPrimary || THEME.textOnPrimary }}>
+    <div
+      className="ygpt-px-2 ygpt-py-3 ygpt-flex ygpt-justify-between ygpt-items-center"
+      style={{ background: layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary, color: layout?.colors.textOnPrimary || YOUR_GPT_LAYOUT.colors.textOnPrimary }}
+    >
       {/* LEFT  */}
       <div className="left ygpt-flex ygpt-gap-2 ygpt-items-center">
         <button onClick={() => onExpanded()} className="ygpt-opacity-50 hover:ygpt-opacity-100 ygpt-transition-all">
@@ -32,15 +35,15 @@ export default function ChatHeader({ expanded, onExpanded, onClose, onClearSessi
       {/* RIGHT  */}
       <div className="ygpt-flex">
         {/* <div className="ygpt-relative">
-          <Btn onClick={() => setLanguagePopup((s) => !s)} className="" bg={chatbotSettings?.widget_color || THEME.primaryColor} color={chatbotSettings?.widget_text_color || THEME.textOnPrimary}>
+          <Btn onClick={() => setLanguagePopup((s) => !s)} className="" bg={chatbotSettings?.widget_color || YOUR_GPT_LAYOUT.colors.primary} color={chatbotSettings?.widget_text_color || YOUR_GPT_LAYOUT.colors.textOnPrimary}>
             <RiTranslate2 size={20} />
           </Btn>
           <LanguagePopup open={languagePopup} onClose={() => {}} />
         </div> */}
-        <Btn onClick={() => onClearSession()} className="" bg={layout?.colors.primary || THEME.primaryColor} color={layout?.colors.textOnPrimary || THEME.textOnPrimary}>
+        <Btn onClick={() => onClearSession()} className="" bg={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary} color={layout?.colors.textOnPrimary || YOUR_GPT_LAYOUT.colors.textOnPrimary}>
           <RiDeleteBin6Fill size={20} />
         </Btn>
-        <Btn onClick={() => onClose()} className="" bg={layout?.colors.primary || THEME.primaryColor} color={layout?.colors.textOnPrimary || THEME.textOnPrimary}>
+        <Btn onClick={() => onClose()} className="" bg={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary} color={layout?.colors.textOnPrimary || YOUR_GPT_LAYOUT.colors.textOnPrimary}>
           <IoMdClose size={20} />
         </Btn>
       </div>

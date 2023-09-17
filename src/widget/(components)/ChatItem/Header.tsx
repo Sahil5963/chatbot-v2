@@ -1,12 +1,11 @@
 import { BiSolidUserCircle } from "react-icons/bi";
-import { MessageD } from "../../../../../types/message";
-import { useChatbot } from "../../../../../context/ChatbotContext";
-import { THEME } from "../../../../../utils/constants/ui";
-import ChatbotLogo from "../../../../components/logos/Chatbot";
+import { useWidget } from "../../context/WidgetContext";
+import { MessageD } from "../../types/message";
+import ChatbotLogo from "../logos/Chatbot";
+import { YOUR_GPT_LAYOUT } from "../../utils/constants";
 
 export default function Header({ message }: { message: MessageD }) {
-  const { chatbotSettings } = useChatbot();
-
+  const { setting, layout } = useWidget();
   const renderHead = () => {
     switch (message.from) {
       case "user":
@@ -16,9 +15,9 @@ export default function Header({ message }: { message: MessageD }) {
           <div className="ygpt-flex ygpt-gap-2 ygpt-items-center">
             <div
               className="ygpt-rounded-full ygpt-h-[30px] ygpt-flex ygpt-items-center ygpt-justify-center ygpt-aspect-square "
-              style={{ background: chatbotSettings?.logo ? "transparent" : chatbotSettings?.widget_color || THEME.primaryColor, color: chatbotSettings?.widget_text_color || THEME.textOnPrimary }}
+              style={{ background: setting?.logo ? "transparent" : layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary, color: setting?.widget_text_color || YOUR_GPT_LAYOUT.colors.textOnPrimary }}
             >
-              {chatbotSettings?.logo ? <img src={chatbotSettings.logo} className="ygpt-h-full ygpt-w-full ygpt-object-cover" /> : <ChatbotLogo size={20} />}
+              {setting?.logo ? <img src={setting.logo} className="ygpt-h-full ygpt-w-full ygpt-object-cover" /> : <ChatbotLogo size={20} />}
             </div>
             <div className="ygpt-bg-gray-100 ygpt-rounded-md ygpt-text-xs ygpt-p-[4px] ygpt-text-zinc-600">AI BOT</div>
           </div>

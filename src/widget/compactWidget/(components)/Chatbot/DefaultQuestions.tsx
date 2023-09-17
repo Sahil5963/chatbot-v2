@@ -3,7 +3,7 @@ import { padX } from ".";
 import { styled } from "styled-components";
 import { useCompactChatbot } from "../../context/CompactContext";
 import { useWidget } from "../../../context/WidgetContext";
-import { THEME } from "../../../../utils/constants/ui";
+import { YOUR_GPT_LAYOUT } from "../../../utils/constants";
 
 export default function DefaultQuestions() {
   const { layout } = useWidget();
@@ -35,8 +35,8 @@ export default function DefaultQuestions() {
           return (
             <Item
               onClick={() => sendMessage(i.question)}
-              color={layout?.colors.primary || THEME.primaryColor}
-              text={layout?.colors.textOnPrimary || THEME.textOnPrimary}
+              color={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary}
+              text={layout?.colors.textOnPrimary || YOUR_GPT_LAYOUT.colors.textOnPrimary}
               className="ygpt-rounded-full ygpt-transition-all ygpt-cursor-pointer ygpt-opacity-80 hover:ygpt-opacity-100 ygpt-border ygpt-px-3 ygpt-py-1 ygpt-text-sm"
               key={i.label}
             >

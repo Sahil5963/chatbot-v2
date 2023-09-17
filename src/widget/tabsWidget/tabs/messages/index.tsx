@@ -3,10 +3,10 @@ import { styled } from "styled-components";
 import { TAB_THEME } from "../../ui";
 import { useTabUiChatbot } from "../../context/TabUiContext";
 import AnimatedHeader from "../../(components)/AnimatedHeader";
-import { THEME } from "../../../../utils/constants/ui";
-import ChatbotLogo from "../../../components/logos/Chatbot";
-import ChatIcon from "../../../components/icons/ChatIcon";
+import ChatbotLogo from "../../../(components)/logos/Chatbot";
+import ChatIcon from "../../../(components)/icons/ChatIcon";
 import { useWidget } from "../../../context/WidgetContext";
+import { YOUR_GPT_LAYOUT } from "../../../utils/constants";
 
 export default function Messages() {
   const { navigate } = useTabUiChatbot();
@@ -15,7 +15,7 @@ export default function Messages() {
   return (
     <div className="ygpt-relative ygpt-h-full ygpt-flex-1 ygpt-flex ygpt-flex-col">
       <AnimatedHeader
-        style={{ height: TAB_THEME.headerHeights.root, background: layout?.colors.primary || THEME.primaryColor, color: layout?.colors.textOnPrimary || THEME.textOnPrimary }}
+        style={{ height: TAB_THEME.headerHeights.root, background: layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary, color: layout?.colors.textOnPrimary || YOUR_GPT_LAYOUT.colors.textOnPrimary }}
         className="ygpt-flex ygpt-items-center ygpt-justify-center ygpt-h-full"
       >
         <div>Messages</div>
@@ -29,7 +29,7 @@ export default function Messages() {
                 navigate("chatScreen");
               }}
               key={i}
-              color={layout?.colors.primary || THEME.primaryColor}
+              color={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary}
             >
               <div className="left">
                 <div className="avatar">
@@ -56,7 +56,7 @@ export default function Messages() {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         whileHover={{ scale: 1.02 }}
         className="ygpt-flex ygpt-self-center ygpt-gap-3 ygpt-absolute ygpt-bottom-[40px] ygpt-items-center ygpt-px-4 ygpt-h-[42px] ygpt-rounded-lg hover:ygpt-scale-105 hover:ygpt-shadow-md ygpt-text-sm"
-        style={{ color: layout?.colors.textOnPrimary || THEME.textOnPrimary, background: layout?.colors.primary || THEME.primaryColor }}
+        style={{ color: layout?.colors.textOnPrimary || YOUR_GPT_LAYOUT.colors.textOnPrimary, background: layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary }}
       >
         <ChatIcon filled /> Start new conversation
       </motion.button>

@@ -1,6 +1,6 @@
 import { WidgetLayoutD } from "./layout/global";
 
-export type ChatbotSettingApiD = {
+export type ChatbotSettingD = {
   id: number;
   name: string;
   project_id: number;
@@ -19,13 +19,12 @@ export type ChatbotSettingApiD = {
   message_text_color: string;
   reply_text_color: string;
   reply_bg_color: string;
-  enable_widget_form: boolean;
-  enable_navigation_tracking: boolean;
-  notify_to: null;
+  enable_widget_form: any;
+  enable_navigation_tracking: any;
+  notify_to: any;
   base_prompt: string;
   createdAt: string;
   updatedAt: string;
-  widget_form_field: WidgetFormField[];
   layout?: WidgetLayoutD | null;
 };
 
@@ -43,3 +42,5 @@ export type WidgetFormField = {
   updatedAt: Date;
   deletedAt: null;
 };
+
+export type WidgetPlace = "showcase" | "chatbot";

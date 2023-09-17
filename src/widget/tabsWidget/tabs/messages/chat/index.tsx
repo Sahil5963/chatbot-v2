@@ -1,18 +1,22 @@
 import { FiArrowLeft } from "react-icons/fi";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { styled } from "styled-components";
-import { TAB_THEME } from "../../ui";
-import { useEffect, useRef } from "react";
-import { useTabUiChatbot } from "../../context/TabUiContext";
-import AnimatedHeader from "../../(components)/AnimatedHeader";
-import { IconBtn, ScrollDiv } from "../../../components/styles";
-import ChatItem from "../../../components/ChatItem";
-import ChatActionBar from "../../../components/ChatActionBar";
-import { THEME } from "../../../../utils/constants/ui";
-import { useWidget } from "../../../context/WidgetContext";
+import { TAB_THEME } from "../../../ui";
+import { useEffect, useRef, useState } from "react";
+import { useTabUiChatbot } from "../../../context/TabUiContext";
+import AnimatedHeader from "../../../(components)/AnimatedHeader";
+import { IconBtn, ScrollDiv } from "../../../../(components)/styles";
+import ChatItem from "../../../../(components)/ChatItem";
+import ChatActionBar from "../../../../(components)/ChatActionBar";
+import { useWidget } from "../../../../context/WidgetContext";
+import { MessageD } from "../../../../types/message";
+import { YOUR_GPT_LAYOUT } from "../../../../utils/constants";
 
 export default function Chat() {
   const { navigate } = useTabUiChatbot();
+
+  const [messages] = useState<MessageD[]>([]);
+
   const { layout } = useWidget();
 
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
@@ -42,7 +46,7 @@ export default function Chat() {
 
   return (
     <Root>
-      <AnimatedHeader style={{ background: layout?.colors.primary || THEME.primaryColor, height: TAB_THEME.headerHeights.root }} className="ygpt-w-full ygpt-flex ygpt-justify-between ygpt-items-center padX ygpt-h-full ">
+      <AnimatedHeader style={{ background: layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary, height: TAB_THEME.headerHeights.root }} className="ygpt-w-full ygpt-flex ygpt-justify-between ygpt-items-center padX ygpt-h-full ">
         <div>
           <IconBtn onClick={() => navigate("messagesTab")} color="#ffffff">
             <FiArrowLeft size={20} />
@@ -56,7 +60,7 @@ export default function Chat() {
 
       <Middle>
         <ScrollDiv
-          color={layout?.colors.primary || THEME.primaryColor}
+          color={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary}
           className="content ygpt-overflow-x-hidden   ygpt-overflow-y-auto ygpt-flex-1 ygpt-py-2 ygpt-flex ygpt-flex-col  ygpt-items-start ygpt-gap-3"
           style={{ transition: `scroll-behavior 0.5s ease-in-out` }}
           ref={chatContainerRef}

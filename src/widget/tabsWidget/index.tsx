@@ -1,5 +1,5 @@
 import TabsLayout from "./layout";
-import Chat from "./tabs/chat";
+import Chat from "./tabs/messages/chat";
 import TabUiProvider, { useTabUiChatbot } from "./context/TabUiContext";
 import TabProvider from "./context/TabContext";
 

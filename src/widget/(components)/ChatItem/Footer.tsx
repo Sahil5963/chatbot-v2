@@ -1,9 +1,9 @@
 import { HiThumbDown, HiThumbUp } from "react-icons/hi";
 import { styled } from "styled-components";
 import LearnMoreLinks from "./LearnMoreLinks";
-import { useChatbot } from "../../../../../context/ChatbotContext";
-import { MessageD } from "../../../../../types/message";
-import { HIDE_FEEDBACK } from "../../../../../utils/helper";
+import { useChatbot } from "../../context/ChatbotContext";
+import { MessageD } from "../../types/message";
+import { HIDE_FEEDBACK } from "../../utils/helper";
 
 export default function Footer({ message, rateMessage }: { message: MessageD; rateMessage: (data: { messageId: number; rate: "1" | "0" }) => any }) {
   const { isFullPage } = useChatbot();

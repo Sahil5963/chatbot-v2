@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ChatbotSettingApiD } from "../types";
+import { ChatbotSettingD, WidgetPlace } from "../types";
 import { MessageEventResponse, MessagesComponseEventResponse, SessionData, SocketState } from "../types/socket";
 import { StorageManager } from "../utils/storage";
 import { getChatbotCreds, getVisitorName, playSound } from "../utils/helper";
@@ -15,7 +15,7 @@ declare global {
 }
 
 type ChatbotContextType = {
-  chatbotSettings: ChatbotSettingApiD | null;
+  chatbotSettings: ChatbotSettingD | null;
   isFullPage: boolean;
   chatbotPopup: boolean;
   setChatbotPopup: React.Dispatch<React.SetStateAction<boolean>>;
@@ -30,13 +30,14 @@ type ChatbotContextType = {
   unseenCount: number;
   browserTabActive: boolean;
   loadingChatbotSettings: boolean;
+  widgetPlace: WidgetPlace;
 };
 
 const ChatbotContext = React.createContext<ChatbotContextType>({} as ChatbotContextType);
 
 export const useChatbot = () => React.useContext(ChatbotContext);
 
-export default function ChatbotProvider({ children }: { children: React.ReactNode }) {
+export default function ChatbotProvider({ children, widgetPlace }: { children: React.ReactNode; widgetPlace: WidgetPlace }) {
   /**
    * CONFIG
    */
@@ -249,6 +250,7 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
         unseenCount,
         browserTabActive,
         loadingChatbotSettings,
+        widgetPlace,
       }}
     >
       {children}

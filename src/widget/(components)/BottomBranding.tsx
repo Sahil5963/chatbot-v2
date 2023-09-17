@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function BottomBranding({ link = "https://yourgpt.ai", title = "YouGPT" }: { title: string; link: string }) {
   return (
     <div className="ygpt-text-sm ygpt-flex ygpt-justify-center ygpt-bg-gray-50 ygpt-py-[4px]">

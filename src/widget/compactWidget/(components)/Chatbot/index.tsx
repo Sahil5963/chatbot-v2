@@ -1,12 +1,12 @@
-import ChatItem from "./ChatItem";
 import Header from "./Header";
 import Footer from "./Footer";
 import DefaultQuestions from "./DefaultQuestions";
 import { useEffect, useRef } from "react";
 import { useCompactChatbot } from "../../context/CompactContext";
 import { useWidget } from "../../../context/WidgetContext";
-import { ScrollDiv } from "../../../components/styles";
-import { THEME } from "../../../../utils/constants/ui";
+import { ScrollDiv } from "../../../(components)/styles";
+import ChatItem from "../../../(components)/ChatItem";
+import { YOUR_GPT_LAYOUT } from "../../../utils/constants";
 
 export default function Chatbot() {
   const { messages, rateMessage } = useCompactChatbot();
@@ -43,7 +43,7 @@ export default function Chatbot() {
       <Header />
 
       <ScrollDiv
-        color={layout?.colors.primary || THEME.primaryColor}
+        color={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary}
         className="content ygpt-overflow-x-hidden   ygpt-overflow-y-auto ygpt-flex-1 ygpt-py-2 ygpt-flex ygpt-flex-col  ygpt-items-start ygpt-gap-3"
         style={{ transition: `scroll-behavior 0.5s ease-in-out` }}
         ref={chatContainerRef}

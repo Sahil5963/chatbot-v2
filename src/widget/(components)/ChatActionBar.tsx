@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import { customDebounce } from "../../utils/helper";
-import { THEME } from "../../utils/constants/ui";
+import { customDebounce } from "../utils/helper";
 import SendIcon from "./icons/SendIcon";
+import { widgetUi } from "../utils/constants/ui";
 
 export default function ChatActionBar({ notifyTyping, sendMessage }: { notifyTyping: (isTyping: boolean) => void; sendMessage: (text: string) => void }) {
   const [text, setText] = useState("");
@@ -35,7 +35,7 @@ export default function ChatActionBar({ notifyTyping, sendMessage }: { notifyTyp
   }, [isTyping, notifyTyping]);
 
   return (
-    <div className="ygpt-relative ygpt-flex ygpt-items-center ygpt-border-t ygpt-border-gray-200" style={{ minHeight: THEME.actionbarHeight }}>
+    <div className="ygpt-relative ygpt-flex ygpt-items-center ygpt-border-t ygpt-border-gray-200" style={{ minHeight: widgetUi.actionbarHeight }}>
       <TextareaAutosize
         ref={inputRef}
         maxRows={4}

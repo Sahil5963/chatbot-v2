@@ -1,5 +1,3 @@
-export const FULL_SCREEN_ROUTE = "https://chatbot-v2-henna.vercel.app";
-
 export const LANGUAGES = [
   { name: "Auto Detect", code: "auto" },
   { name: "English", code: "en" },

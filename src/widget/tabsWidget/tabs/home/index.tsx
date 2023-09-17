@@ -2,10 +2,10 @@ import { useState } from "react";
 import HomeHeader from "../../(components)/HomeHeader";
 import { styled } from "styled-components";
 import AutoResize from "react-textarea-autosize";
-import SendIcon from "../../../components/icons/SendIcon";
-import { THEME } from "../../../../utils/constants/ui";
+import SendIcon from "../../../(components)/icons/SendIcon";
 import SocialMediaBtns from "../../(components)/SocialMediaBtns";
 import { useWidget } from "../../../context/WidgetContext";
+import { YOUR_GPT_LAYOUT } from "../../../utils/constants";
 
 export default function Home() {
   const { layout } = useWidget();
@@ -30,7 +30,7 @@ export default function Home() {
         {/* SEND QUERY  */}
 
         <div className="ygpt-relative ygpt-w-full  ygpt-flex ygpt-items-center ygpt-mb-4">
-          <TextArea placeholder="Type your query..." color={layout?.colors.primary} maxRows={3} onChange={(e) => setText(e.target.value)} />
+          <TextArea placeholder="Type your query..." color={layout?.colors.primary} maxRows={3} onChange={(e: any) => setText(e.target.value)} />
           <div
             className={` ygpt-cursor-pointer hover:ygpt-bg-blue-100 ygpt-text-blue-600  ygpt-h-[38px] ygpt-aspect-square ygpt-rounded-full ygpt-overflow-hidden ygpt-flex ygpt-justify-center ygpt-items-center ygpt-absolute ygpt-right-1  ${
               text ? "ygpt-scale-100 ygpt-opacity-100" : "ygpt-scale-[0.5] ygpt-opacity-0 ygpt-pointer-events-none"
@@ -49,7 +49,7 @@ export default function Home() {
           {layout?.externalLinks.map((i) => {
             if (i.type === "link") {
               return (
-                <Link color={layout?.colors.primary || THEME.primaryColor} key={i.link} href={i.link}>
+                <Link color={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary} key={i.link} href={i.link}>
                   {i.text}
                 </Link>
               );

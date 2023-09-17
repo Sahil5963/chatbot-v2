@@ -7,7 +7,7 @@ import { getStreamData } from "./utils";
 import { getChatbotCreds, getVisitorName, playSound } from "utils/helper";
 import { StorageManager } from "utils/storage";
 import { useSettings } from "hooks/useSettings";
-import { ChatbotSettingApiD } from "types";
+import { ChatbotSettingD } from "types";
 import { LayoutD } from "types/layout";
 import layoutJSON from "dummy/layout.json";
 
@@ -23,7 +23,7 @@ declare global {
 type ChatbotContextType = {
   messages: MessageD[];
   setMessages: React.Dispatch<React.SetStateAction<MessageD[]>>;
-  chatbotSettings: ChatbotSettingApiD | null;
+  chatbotSettings: ChatbotSettingD | null;
   isFullPage: boolean;
   sendMessage: (message: string) => void;
   chatbotPopup: boolean;

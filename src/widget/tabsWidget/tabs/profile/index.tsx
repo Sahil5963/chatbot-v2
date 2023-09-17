@@ -1,9 +1,9 @@
 import { styled } from "styled-components";
 import { TAB_THEME } from "../../ui";
 import AnimatedHeader from "../../(components)/AnimatedHeader";
-import { THEME } from "../../../../utils/constants/ui";
-import ScanIcon from "../../../components/icons/ScanIcon";
+import ScanIcon from "../../../(components)/icons/ScanIcon";
 import { useWidget } from "../../../context/WidgetContext";
+import { YOUR_GPT_LAYOUT } from "../../../utils/constants";
 
 export default function Profile() {
   const { layout } = useWidget();
@@ -11,7 +11,7 @@ export default function Profile() {
   return (
     <Root>
       <AnimatedHeader
-        style={{ background: layout?.colors.primary || THEME.primaryColor, color: layout?.colors.textOnPrimary || THEME.textOnPrimary, height: TAB_THEME.headerHeights.root }}
+        style={{ background: layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary, color: layout?.colors.textOnPrimary || YOUR_GPT_LAYOUT.colors.textOnPrimary, height: TAB_THEME.headerHeights.root }}
         className="ygpt-flex ygpt-items-center ygpt-justify-center ygpt-h-full"
       >
         <div>Your account</div>
@@ -26,15 +26,15 @@ export default function Profile() {
         <form className="ygpt-gap-2 ygpt-flex ygpt-flex-col">
           <Field>
             <label htmlFor="name">Name</label>
-            <Input color={layout?.colors.primary || THEME.primaryColor} name="name" id="name" type="text" required placeholder="Enter Name" />
+            <Input color={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary} name="name" id="name" type="text" required placeholder="Enter Name" />
           </Field>
 
           <Field>
             <label htmlFor="email">Email</label>
-            <Input color={layout?.colors.primary || THEME.primaryColor} name="email" type="email" id="email" required placeholder="Enter email" />
+            <Input color={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary} name="email" type="email" id="email" required placeholder="Enter email" />
           </Field>
 
-          <Button style={{ background: layout?.colors.primary || THEME.primaryColor, color: layout?.colors.textOnPrimary || THEME.textOnPrimary }}>
+          <Button style={{ background: layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary, color: layout?.colors.textOnPrimary || YOUR_GPT_LAYOUT.colors.textOnPrimary }}>
             {" "}
             <ScanIcon /> Verify Account
           </Button>

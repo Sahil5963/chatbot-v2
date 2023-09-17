@@ -1,13 +1,17 @@
 import { useMemo } from "react";
-import { useChatbot } from "../context/ChatbotContext";
+import ChatbotProvider, { useChatbot } from "./context/ChatbotContext";
 import Compact from "./compactWidget";
 import Tabs from "./tabsWidget";
-import ChatbotFrame from "./components/ChatbotFrame";
-import WidgetButton from "./components/WidgetButton";
+import ChatbotFrame from "./(components)/ChatbotFrame";
+import WidgetButton from "./(components)/WidgetButton";
 import WidgetProvider, { useWidget } from "./context/WidgetContext";
+import { RootStyles } from "./styles/RootStyles";
+import LanguageProvider from "./context/LanguageProvider";
+import { WidgetPlace } from "./types";
+import { YOUR_GPT_LAYOUT } from "./utils/constants";
 
 const Root = () => {
-  const { isFullPage } = useChatbot();
+  const { isFullPage, widgetPlace } = useChatbot();
   const { layout } = useWidget();
 
   const content = useMemo(() => {
@@ -21,7 +25,7 @@ const Root = () => {
   }, [layout?.type]);
 
   return (
-    <>
+    <RootStyles layout={layout || YOUR_GPT_LAYOUT} className={`widgetPlace-${widgetPlace}`}>
       {isFullPage ? (
         <>
           <div className="ygpt-h-screen ygpt-w-full">{content}</div>
@@ -32,14 +36,20 @@ const Root = () => {
           <WidgetButton />
         </>
       )}
-    </>
+    </RootStyles>
   );
 };
 
-export default function Widget() {
+export default function Widget({ widgetPlace = "chatbot" }: { widgetPlace?: WidgetPlace }) {
   return (
-    <WidgetProvider>
-      <Root />
-    </WidgetProvider>
+    <LanguageProvider>
+      <div className="ygpt-chatbot">
+        <ChatbotProvider widgetPlace={widgetPlace}>
+          <WidgetProvider>
+            <Root />
+          </WidgetProvider>
+        </ChatbotProvider>
+      </div>
+    </LanguageProvider>
   );
 }

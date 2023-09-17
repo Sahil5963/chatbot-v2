@@ -1,4 +1,4 @@
-import { ComposePayload } from "utils/socket";
+import { ComposePayload } from "../utils/socket";
 
 export type SessionData = {
   id: number;

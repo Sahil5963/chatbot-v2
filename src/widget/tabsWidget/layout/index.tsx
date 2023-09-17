@@ -5,10 +5,10 @@ import { useMemo } from "react";
 import { styled } from "styled-components";
 import { useWidget } from "../../context/WidgetContext";
 import { useTabUiChatbot } from "../context/TabUiContext";
-import HomeIcon from "../../components/icons/HomeIcon";
-import ChatIcon from "../../components/icons/ChatIcon";
-import AccountIcon from "../../components/icons/AccountIcon";
-import { BottomTabsD } from "../../../types/layout";
+import HomeIcon from "../../(components)/icons/HomeIcon";
+import ChatIcon from "../../(components)/icons/ChatIcon";
+import AccountIcon from "../../(components)/icons/AccountIcon";
+import { BottomTabsD } from "../../types/layout";
 import { TAB_THEME } from "../ui";
 
 export default function TabsLayout() {

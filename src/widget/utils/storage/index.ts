@@ -1,5 +1,5 @@
-import { MessageD } from "types/message";
-import { SessionData } from "types/socket";
+import { MessageD } from "../../types/message";
+import { SessionData } from "../../types/socket";
 
 export const StorageManager = {
   setStorage: ({ sessionData, messages, widgetUid }: { sessionData?: SessionData; messages?: MessageD[]; widgetUid: string }) => {

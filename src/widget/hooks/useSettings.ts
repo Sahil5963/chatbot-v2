@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { getChatbotSettingApi } from "../network/api";
-import { ChatbotSettingApiD } from "../types";
-import { initialLayout } from "../widget/context/WidgetContext";
+import { getChatbotSettingApi } from "../../network/api";
+import { ChatbotSettingD } from "../types";
+import { YOUR_GPT_LAYOUT } from "../utils/constants";
 
 export const useSettings = ({ chatbotUid, widgetUid }: { chatbotUid: string; widgetUid: string }) => {
-  const [chatbotSettings, setChatbotSettings] = useState<ChatbotSettingApiD | null>(null);
+  const [chatbotSettings, setChatbotSettings] = useState<ChatbotSettingD | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export const useSettings = ({ chatbotUid, widgetUid }: { chatbotUid: string; wid
         setLoading(false);
         setChatbotSettings({
           ...res.data,
-          layout: initialLayout,
+          layout: YOUR_GPT_LAYOUT,
         });
       } catch (err) {
         setLoading(false);

@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useCallback, useContext, useState } from "react";
-import { ScreensD } from "../../../types/layout";
+import { ScreensD } from "../../types/layout";
 
 type TabUiContextType = {
   activeRoute: {

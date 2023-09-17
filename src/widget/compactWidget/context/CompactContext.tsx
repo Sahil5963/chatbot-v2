@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { MessageD } from "../../../types/message";
-import { useChatbot } from "../../../context/ChatbotContext";
-import { StorageManager } from "../../../utils/storage";
-import socketManager from "../../../utils/socket";
-import { MessageEventResponse, MessagesComponseEventResponse } from "../../../types/socket";
-import { playSound } from "../../../utils/helper";
-import { getStreamData } from "../../../utils";
-import { SocketListenE } from "../../../types/enum/socket";
+import { MessageD } from "../../types/message";
+import { useChatbot } from "../../context/ChatbotContext";
+import { StorageManager } from "../../utils/storage";
+import socketManager from "../../utils/socket";
+import { MessageEventResponse, MessagesComponseEventResponse } from "../../types/socket";
+import { playSound } from "../../utils/helper";
+import { getStreamData } from "../../utils";
+import { SocketListenE } from "../../types/enum/socket";
 
 type LoadingStatus = "loading" | "typing" | null;
 

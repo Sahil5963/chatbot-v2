@@ -2,9 +2,10 @@ import { RiDeleteBin6Fill, RiExpandLeftLine, RiExpandRightLine } from "react-ico
 import { IoMdClose } from "react-icons/io";
 import { styled } from "styled-components";
 import { useIntl } from "react-intl";
-import { useChatbot } from "../../../../context/ChatbotContext";
+import { useChatbot } from "../../../context/ChatbotContext";
 import { useWidget } from "../../../context/WidgetContext";
-import { THEME } from "../../../../utils/constants/ui";
+import ChatbotLogo from "../../../(components)/logos/Chatbot";
+import { YOUR_GPT_LAYOUT } from "../../../utils/constants";
 
 export default function Header() {
   const { clearSession, setExpanded, expanded, setChatbotPopup } = useChatbot();
@@ -13,16 +14,14 @@ export default function Header() {
   const intl = useIntl();
 
   return (
-    <div className="ygpt-px-2 ygpt-py-3 ygpt-flex ygpt-justify-between ygpt-items-center" style={{ background: layout?.colors.primary || THEME.primaryColor, color: layout?.colors.textOnPrimary }}>
+    <div className="ygpt-px-2 ygpt-py-3 ygpt-flex ygpt-justify-between ygpt-items-center" style={{ background: layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary, color: layout?.colors.textOnPrimary }}>
       {/* LEFT  */}
       <div className="left ygpt-flex ygpt-gap-2 ygpt-items-center">
         <button onClick={() => setExpanded((s) => !s)} className="ygpt-opacity-50 hover:ygpt-opacity-100 ygpt-transition-all">
           {expanded ? <RiExpandRightLine size={20} /> : <RiExpandLeftLine size={20} />}
         </button>
 
-        <div className="avagar">
-          <img src={setting?.logo} alt="Avatar" className="ygpt-h-[32px] ygpt-aspect-square" />
-        </div>
+        <div className="avagar">{setting?.logo ? <img src={setting?.logo} alt="Avatar" className="ygpt-h-[32px] ygpt-aspect-square" /> : <ChatbotLogo />}</div>
 
         <div className="content">
           <h4 className="ygpt-font-medium ">{setting?.name || "YourGPT"}</h4>
@@ -33,15 +32,15 @@ export default function Header() {
       {/* RIGHT  */}
       <div className="ygpt-flex">
         {/* <div className="ygpt-relative">
-          <Btn onClick={() => setLanguagePopup((s) => !s)} className="" bg={chatbotSettings?.widget_color || THEME.primaryColor} color={chatbotSettings?.widget_text_color || THEME.textOnPrimary}>
+          <Btn onClick={() => setLanguagePopup((s) => !s)} className="" bg={chatbotSettings?.widget_color || YOUR_GPT_LAYOUT.colors.primary} color={chatbotSettings?.widget_text_color || YOUR_GPT_LAYOUT.colors.textOnPrimary}>
             <RiTranslate2 size={20} />
           </Btn>
           <LanguagePopup open={languagePopup} onClose={() => {}} />
         </div> */}
-        <Btn onClick={() => clearSession()} className="" bg={layout?.colors.primary || THEME.primaryColor} color={layout?.colors.textOnPrimary || THEME.textOnPrimary}>
+        <Btn onClick={() => clearSession()} className="" bg={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary} color={layout?.colors.textOnPrimary || YOUR_GPT_LAYOUT.colors.textOnPrimary}>
           <RiDeleteBin6Fill size={20} />
         </Btn>
-        <Btn onClick={() => setChatbotPopup(false)} className="" bg={layout?.colors.primary || THEME.primaryColor} color={layout?.colors.textOnPrimary || THEME.textOnPrimary}>
+        <Btn onClick={() => setChatbotPopup(false)} className="" bg={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary} color={layout?.colors.textOnPrimary || YOUR_GPT_LAYOUT.colors.textOnPrimary}>
           <IoMdClose size={20} />
         </Btn>
       </div>

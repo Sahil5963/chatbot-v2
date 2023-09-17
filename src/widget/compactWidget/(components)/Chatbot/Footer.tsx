@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
-import ActionBar from "./ActionBar";
-import { HIDE_FOOTER } from "../../../../utils/helper";
-import { useChatbot } from "../../../../context/ChatbotContext";
+import { HIDE_FOOTER } from "../../../utils/helper";
+import { useChatbot } from "../../../context/ChatbotContext";
+import ChatActionBar from "../../../(components)/ChatActionBar";
+import { useCompactChatbot } from "../../context/CompactContext";
 export default function Footer() {
-  const { isFullPage, chatbotSettings } = useChatbot();
+  const { isFullPage, chatbotSettings, notifyTyping } = useChatbot();
+  const { sendMessage } = useCompactChatbot();
 
   return (
     <motion.div
@@ -22,7 +24,7 @@ export default function Footer() {
         type: "tween",
       }}
     >
-      <ActionBar />
+      <ChatActionBar notifyTyping={notifyTyping} sendMessage={sendMessage} />
       {HIDE_FOOTER && isFullPage ? null : (
         <div className="ygpt-text-sm ygpt-flex ygpt-justify-center ygpt-bg-gray-50 ygpt-py-[4px]">
           <div>
