@@ -6,9 +6,11 @@ import { useChatbot } from "../../../context/ChatbotContext";
 import { useWidget } from "../../../context/WidgetContext";
 import ChatbotLogo from "../../../(components)/logos/Chatbot";
 import { YOUR_GPT_LAYOUT } from "../../../utils/constants";
+import { useCompactChatbot } from "../../context/CompactContext";
 
 export default function Header() {
-  const { clearSession, setExpanded, expanded, setChatbotPopup } = useChatbot();
+  const { setExpanded, expanded, setChatbotPopup } = useChatbot();
+  const { clearSession } = useCompactChatbot();
   const { layout, setting } = useWidget();
   // const [languagePopup, setLanguagePopup] = useState(false);
   const intl = useIntl();

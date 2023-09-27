@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ChatbotSettingD, WidgetPlace } from "../types";
-import { MessageEventResponse, MessagesComponseEventResponse, SessionData, SocketState } from "../types/socket";
+import { MessageEventResponse, SocketState } from "../types/socket";
 import { StorageManager } from "../utils/storage";
-import { getChatbotCreds, getVisitorName, playSound } from "../utils/helper";
+import { getChatbotCreds } from "../utils/helper";
 import { useSettings } from "../hooks/useSettings";
 import socketManager from "../utils/socket";
 import { SocketListenE } from "../types/enum/socket";
@@ -19,11 +19,9 @@ type ChatbotContextType = {
   isFullPage: boolean;
   chatbotPopup: boolean;
   setChatbotPopup: React.Dispatch<React.SetStateAction<boolean>>;
-  sessionData: SessionData | null;
   widgetUid: string;
   chatbotUid: string;
   notifyTyping: (typing: boolean) => void;
-  clearSession: () => any;
   socketState: SocketState;
   expanded: boolean;
   setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
@@ -31,6 +29,8 @@ type ChatbotContextType = {
   browserTabActive: boolean;
   loadingChatbotSettings: boolean;
   widgetPlace: WidgetPlace;
+  visitorUid: string;
+  socketConnected: boolean;
 };
 
 const ChatbotContext = React.createContext<ChatbotContextType>({} as ChatbotContextType);
@@ -65,9 +65,11 @@ export default function ChatbotProvider({ children, widgetPlace }: { children: R
    * CONFIG
    */
 
-  const [sessionData, setSessionData] = useState<SessionData | null>(null);
+  const [visitorUid, setVisitorUid] = useState("");
 
   const [socketState, setSocketState] = useState<SocketState>("idle");
+  const [socketConnected, setSocketConnected] = useState(false);
+
   const { chatbotSettings, loadingChatbotSettings } = useSettings({ chatbotUid, widgetUid });
 
   const [expanded, setExpanded] = useState(false);
@@ -98,152 +100,109 @@ export default function ChatbotProvider({ children, widgetPlace }: { children: R
   /**
    * STORAGE MANAGER
    */
-  useEffect(() => {
-    if (sessionData && widgetUid) {
-      StorageManager.setStorage({
-        sessionData,
-        widgetUid,
-      });
-    }
-  }, [sessionData, widgetUid]);
+  // useEffect(() => {
+  //   if (sessionData && widgetUid) {
+  //     StorageManager.setStorage({
+  //       sessionData,
+  //       widgetUid,
+  //     });
+  //   }
+  // }, [sessionData, widgetUid]);
 
   /**
    * SOCKET EMMITERS
    */
 
   useEffect(() => {
-    if (widgetUid && chatbotUid) {
-      const stored = StorageManager.getStorage(widgetUid);
-
-      if (stored?.sessionData) {
-        setSessionData(stored.sessionData);
-      } else {
-        setSocketState("creatingSession");
-        socketManager.createSession({
-          chatbot_uid: chatbotUid,
+    const stored = StorageManager.getStorage(widgetUid);
+    if (stored?.visitorUid) {
+      setVisitorUid(stored.visitorUid);
+    } else {
+      if (widgetUid && socketConnected) {
+        socketManager.createVisitor({
           widget_uid: widgetUid,
-          //TEMP
-          device_type: "NA",
-          platform: "NA",
         });
       }
     }
-  }, [widgetUid, chatbotUid]);
+    return () => {};
+  }, [widgetUid, socketConnected]);
 
-  const notifyTyping = useCallback(
-    (typing: boolean) => {
-      if (!sessionData) {
-        return;
-      }
-      socketManager.sendCompose({
-        chatbot_uid: chatbotUid,
-        from: "user",
-        session_uid: sessionData?.session_uid,
+  useEffect(() => {
+    if (visitorUid && widgetUid) {
+      socketManager.joinVisitor({
+        visitor_uid: visitorUid,
         widget_uid: widgetUid,
-        type: typing ? "start" : "stop",
-        content: {
-          type: "typing",
-        },
       });
-    },
-    [sessionData, chatbotUid, widgetUid]
-  );
+    }
+  }, [visitorUid, widgetUid]);
+
+  const notifyTyping = useCallback((typing: boolean) => {
+    console.log("typing", typing);
+    // if (!sessionData) {
+    //   return;
+    // }
+    // socketManager.sendCompose({
+    //   chatbot_uid: chatbotUid,
+    //   from: "user",
+    //   session_uid: sessionData?.session_uid,
+    //   widget_uid: widgetUid,
+    //   type: typing ? "start" : "stop",
+    //   content: {
+    //     type: "typing",
+    //   },
+    // });
+  }, []);
 
   /**
    * SOCKET HANDLES
    */
 
-  const handleJoined = useCallback(() => {
-    setSocketState("joined");
-  }, []);
-
-  const handleSessionCreated = useCallback((data: SessionData) => {
-    setSessionData(data);
-  }, []);
-
-  useEffect(() => {
-    if (sessionData && !(socketState === "idle" || socketState === "error")) {
-      socketManager.joinSession({
-        chatbot_uid: chatbotUid,
-        session_uid: sessionData.session_uid,
-        user: {
-          name: "visitor" + getVisitorName(sessionData.id),
-        },
-        device: {
-          page_title: document.title,
-          page_url: window.location.href,
-        },
+  const handleVisitorCreated = useCallback(
+    (data: any) => {
+      setVisitorUid(data.visitor_uid);
+      StorageManager.setStorage({
+        visitorUid: data.visitor_uid,
+        widgetUid,
       });
-    }
-  }, [sessionData, chatbotUid, socketState]);
+    },
+    [widgetUid]
+  );
 
   const handleMessageReceived = useCallback(
     (data: MessageEventResponse) => {
-      console.log(data);
-
-      if (!sessionData) {
-        return;
-      }
-
-      if (!browserTabActive) {
-        playSound();
-      }
-
-      if (!chatbotPopup) {
-        setUnseenCount((s) => s + 1);
-      }
+      console.log(data, browserTabActive, chatbotPopup);
     },
-    [sessionData, browserTabActive, chatbotPopup]
+    [browserTabActive, chatbotPopup]
   );
-
-  const handleMessageCompose = useCallback((data: MessagesComponseEventResponse) => {
-    console.log("HANDLE COMPSE", data);
-  }, []);
 
   const handleConnected = useCallback(() => {
     setSocketState("connected");
+    setSocketConnected(true);
   }, []);
 
   useEffect(() => {
-    socketManager.socket.on(SocketListenE.joined, handleJoined);
-    socketManager.socket.on(SocketListenE.sessionCreated, handleSessionCreated);
     socketManager.socket.on(SocketListenE.messageReceived, handleMessageReceived);
-    socketManager.socket.on(SocketListenE.messageCompose, handleMessageCompose);
     socketManager.socket.on(SocketListenE.connect, handleConnected);
-    return () => {
-      socketManager.socket.off(SocketListenE.joined, handleJoined);
-      socketManager.socket.off(SocketListenE.sessionCreated, handleSessionCreated);
-      socketManager.socket.off(SocketListenE.messageReceived, handleMessageReceived);
-      socketManager.socket.off(SocketListenE.messageCompose, handleMessageCompose);
-      socketManager.socket.off(SocketListenE.connect, handleConnected);
-    };
-  }, [handleJoined, handleMessageReceived, handleSessionCreated, handleMessageCompose, handleConnected]);
 
-  const clearSession = () => {
-    setSessionData(null);
-    StorageManager.clearStorage(widgetUid);
-    setSocketState("resettingSession");
-    socketManager.createSession({
-      chatbot_uid: chatbotUid,
-      widget_uid: widgetUid,
-      //TEMP
-      device_type: "NA",
-      platform: "NA",
-    });
-  };
+    socketManager.socket.on(SocketListenE.visitorCreated, handleVisitorCreated);
+    return () => {
+      socketManager.socket.off(SocketListenE.messageReceived, handleMessageReceived);
+      socketManager.socket.off(SocketListenE.connect, handleConnected);
+
+      socketManager.socket.on(SocketListenE.visitorCreated, handleVisitorCreated);
+    };
+  }, [handleMessageReceived, handleConnected, handleVisitorCreated]);
 
   return (
     <ChatbotContext.Provider
       value={{
         chatbotUid,
         widgetUid,
-        sessionData,
         chatbotSettings,
         isFullPage,
         chatbotPopup,
         setChatbotPopup,
         notifyTyping,
-        clearSession,
         socketState,
         expanded,
         setExpanded,
@@ -251,6 +210,8 @@ export default function ChatbotProvider({ children, widgetPlace }: { children: R
         browserTabActive,
         loadingChatbotSettings,
         widgetPlace,
+        visitorUid,
+        socketConnected,
       }}
     >
       {children}

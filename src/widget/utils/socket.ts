@@ -1,9 +1,9 @@
 import { io, Socket } from "socket.io-client";
 import { MessageFrom } from "../types/socket";
 import { SocketEmitE } from "../types/enum/socket";
+import { DEVICE_TYPE, PLATFORM } from "./helper";
 
 export type ComposePayload = {
-  chatbot_uid: string;
   session_uid: string;
   widget_uid: string;
   from: MessageFrom;
@@ -16,8 +16,8 @@ class SocketManager {
   sessionData: any = null;
 
   constructor() {
-    // this.socket = io("http://192.168.1.14:8080/chatbot"); // Initialize the socket connection
-    this.socket = io("https://wss.yourgpt.ai/chatbot"); // Initialize the socket connection
+    this.socket = io("http://192.168.18.221:8080/chatbot"); // Initialize the socket connection
+    // this.socket = io("https://wss.yourgpt.ai/chatbot"); // Initialize the socket connection
   }
 
   emitEvent(eventName: string, data: any) {
@@ -25,9 +25,10 @@ class SocketManager {
     this.socket.emit(eventName, data);
   }
 
-  createSession(data: { chatbot_uid: string; widget_uid: string; device_type: string; platform: string }) {
+  createSession(data: { widget_uid: string; visitor_uid: string }) {
     console.log("EMIT CREATE SESSION");
-    this.socket.emit(SocketEmitE.createSession, data);
+    const raw = { ...data, device_type: DEVICE_TYPE, platform: PLATFORM };
+    this.socket.emit(SocketEmitE.createSession, raw);
   }
   joinSession(data: {
     chatbot_uid: string;
@@ -41,7 +42,7 @@ class SocketManager {
     this.socket.emit(SocketEmitE.joinSession, data);
   }
 
-  sendMessage(data: { chatbot_uid: string; session_uid: string; flow_id: string; widget_uid: string; type: string; origin: string; message: string; from: MessageFrom }) {
+  sendMessage(data: { session_uid: string; flow_id: string; widget_uid: string; type: string; origin: string; message: string; from: MessageFrom }) {
     console.log("EMIT SEND MESSAGE");
     this.socket.emit(SocketEmitE.sendMessage, data);
   }
@@ -53,6 +54,16 @@ class SocketManager {
 
   getHistory(data: { chatbot_uid: string; session_uid: string; widget_uid: string }) {
     this.socket.emit(SocketEmitE.history, data);
+  }
+
+  //NEW
+  createVisitor(data: { widget_uid: string }) {
+    console.log("EMIT CREATE VISITOR", data, this.socket.connected);
+    this.socket.emit(SocketEmitE.createVisitor, data);
+  }
+  joinVisitor(data: { widget_uid: string; visitor_uid: string }) {
+    console.log("EMIT JOIN VISITOR", data);
+    this.socket.emit(SocketEmitE.joinVisitor, data);
   }
 }
 

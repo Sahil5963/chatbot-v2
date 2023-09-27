@@ -7,6 +7,7 @@ type TabUiContextType = {
     params: any;
   };
   navigate: (name: ScreensD, params?: any) => any;
+  clearPrams: () => void;
 };
 
 const TabUiContext = createContext<TabUiContextType>({} as TabUiContextType);
@@ -26,5 +27,11 @@ export default function TabUiProvider({ children }: { children: ReactNode }) {
     setActiveRoute({ name, params });
   }, []);
 
-  return <TabUiContext.Provider value={{ activeRoute, navigate }}>{children}</TabUiContext.Provider>;
+  console.log("ACTIVE ROUTE", activeRoute);
+
+  const clearPrams = useCallback(() => {
+    setActiveRoute((s) => ({ name: s.name, params: null }));
+  }, []);
+
+  return <TabUiContext.Provider value={{ activeRoute, navigate, clearPrams }}>{children}</TabUiContext.Provider>;
 }

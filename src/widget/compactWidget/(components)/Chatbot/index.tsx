@@ -49,13 +49,23 @@ export default function Chatbot() {
         ref={chatContainerRef}
         onScroll={handleScroll}
       >
-        {layout?.welcomeMessage["en"] && <ChatItem rateMessage={rateMessage} createdAt={null} content={{ message: layout?.welcomeMessage["en"] }} from="assistant" localId={"welcome"} />}
+        {layout?.welcomeMessage["en"] && (
+          <ChatItem
+            rateMessage={rateMessage}
+            message={{
+              createdAt: null,
+              content: { message: layout?.welcomeMessage["en"] },
+              from: "assistant",
+              localId: "welcome",
+            }}
+          />
+        )}
 
         <DefaultQuestions />
 
         {/* MESSAGE LIST  */}
         {messages.map((i) => {
-          return <ChatItem rateMessage={rateMessage} key={i.localId || i.content.message_id} {...i} />;
+          return <ChatItem rateMessage={rateMessage} key={i.localId || i.content.message_id} message={i} />;
         })}
         {/* {loadingStatus && <>{loadingStatus === "loading" && <span>Loading.....</span>}</>} */}
       </ScrollDiv>

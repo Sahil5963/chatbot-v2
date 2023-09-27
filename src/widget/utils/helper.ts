@@ -1,3 +1,5 @@
+import { DeviceTypeD, PlatformTypeD } from "../types";
+import { MessageD, RenderMessageItem } from "../types/message";
 import { FULL_SCREEN_ROUTE } from "./constants";
 
 export const getVisitorName = (n: string | number) => {
@@ -59,6 +61,28 @@ export const getChatbotCreds = (): { widgetUid: string; chatbotUid: string; full
   }
   return null;
 };
+
+export const getRenderMessageItem = (message: MessageD): RenderMessageItem => {
+  return {
+    text: message?.message || message.content?.message || "",
+    id: message.id || message.content?.message_id,
+    localId: message.localId,
+    sent: message.from == "user",
+    from: message.from || message.send_by,
+    rate: message.rate || null,
+    user: {
+      pic: message.operator?.profile_pic,
+      fName: message.operator?.first_name,
+      name: message.operator?.name,
+    },
+    loadingStatus: message.loadingStatus,
+    createdAt: message.createdAt,
+    links: message.links || [],
+  };
+};
+
+export const DEVICE_TYPE: DeviceTypeD = "desktop";
+export const PLATFORM: PlatformTypeD = "mac";
 
 export const MOBILE_APP_VIEW = new URL(window.location.href).searchParams.has("mobileAppView");
 export const HIDE_HEADER = new URL(window.location.href).searchParams.has("hideHeader");

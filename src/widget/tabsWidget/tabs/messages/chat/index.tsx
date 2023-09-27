@@ -1,84 +1,262 @@
 import { FiArrowLeft } from "react-icons/fi";
-import { RiDeleteBin6Fill } from "react-icons/ri";
+
 import { styled } from "styled-components";
 import { TAB_THEME } from "../../../ui";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTabUiChatbot } from "../../../context/TabUiContext";
 import AnimatedHeader from "../../../(components)/AnimatedHeader";
 import { IconBtn, ScrollDiv } from "../../../../(components)/styles";
 import ChatItem from "../../../../(components)/ChatItem";
 import ChatActionBar from "../../../../(components)/ChatActionBar";
 import { useWidget } from "../../../../context/WidgetContext";
-import { MessageD } from "../../../../types/message";
+import { MessageD, MessagesLoadingStatus, RenderMessageItem } from "../../../../types/message";
 import { YOUR_GPT_LAYOUT } from "../../../../utils/constants";
+import { SocketListenE } from "../../../../types/enum/socket";
+import socketManager from "../../../../utils/socket";
+import { MessagesComponseEventResponse, SessionData } from "../../../../types/socket";
+import useHandleMessageReceived from "../../../../hooks/useReceivedMessageHandle";
+import { useChatbot } from "../../../../context/ChatbotContext";
+import { getSessionMessagesApi } from "../../../../../network/api";
+import { ApiRes } from "../../../../types/enum";
+import { useTabChatbot } from "../../../context/TabContext";
+import { getRenderMessageItem } from "../../../../utils/helper";
+
+// const LIMIT = 100;
 
 export default function Chat() {
-  const { navigate } = useTabUiChatbot();
-
-  const [messages] = useState<MessageD[]>([]);
-
+  const { navigate, activeRoute, clearPrams } = useTabUiChatbot();
+  const { setSessions } = useTabChatbot();
+  const { widgetUid, visitorUid, chatbotPopup } = useChatbot();
+  const [messages, setMessages] = useState<MessageD[]>([]);
   const { layout } = useWidget();
+  const [sessionData, setSessionData] = useState<SessionData | null>(null);
+  const [loadingStatus, setLoadingStatus] = useState<MessagesLoadingStatus>(null);
+  const pendingQuery = useRef("");
 
-  const chatContainerRef = useRef<HTMLDivElement | null>(null);
-  // const [userScrolledUp, setUserScrolledUp] = useState(false);
+  const [newChat, setNewChat] = useState(false);
 
-  // Function to scroll to the bottom of the chat
-  const scrollToBottom = () => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+  const handleMessageReceived = useHandleMessageReceived({
+    messages,
+    sessionData,
+    setLoadingStatus: () => {},
+    setMessages,
+    setUnseenCount: () => {},
+    widgetUid,
+    chatbotPopup,
+  });
+
+  const createSession = useCallback(() => {
+    if (visitorUid && widgetUid) {
+      socketManager.createSession({
+        widget_uid: widgetUid,
+        visitor_uid: visitorUid,
+      });
     }
-  };
+  }, [visitorUid, widgetUid]);
+
+  const sendMessage = useCallback(
+    (message: string) => {
+      if (!message?.trim()) {
+        return;
+      }
+
+      if (!sessionData) {
+        if (!pendingQuery.current) {
+          pendingQuery.current = message;
+          createSession();
+        }
+        return;
+      }
+      setMessages((s) => [
+        ...s,
+        {
+          localId: Date.now(),
+          loadingStatus: null,
+          content: {
+            message: message,
+          },
+          from: "user",
+          createdAt: Date.now(),
+        },
+      ]);
+
+      if (sessionData && message?.trim()) {
+        socketManager.sendMessage({
+          widget_uid: widgetUid,
+          message: message,
+          flow_id: "",
+          from: "user",
+          origin: "chat",
+          session_uid: sessionData?.session_uid,
+          type: "text",
+        });
+      }
+    },
+    [sessionData, widgetUid, createSession]
+  );
 
   useEffect(() => {
-    scrollToBottom();
-  }, []);
+    if (pendingQuery.current) {
+      sendMessage(pendingQuery.current);
+      pendingQuery.current = "";
+    }
+  }, [sendMessage]);
+
+  useEffect(() => {
+    if (activeRoute.params?.sessionData) {
+      setSessionData(activeRoute.params.sessionData);
+      setNewChat(false);
+    } else {
+      setNewChat(true);
+
+      if (activeRoute.params?.query) {
+        pendingQuery.current = activeRoute.params?.query;
+        createSession();
+      }
+    }
+  }, [activeRoute, createSession]);
+
+  const fetchMessages = useCallback(async () => {
+    if (!sessionData?.session_uid) return;
+
+    try {
+      const res = await getSessionMessagesApi({
+        session_uid: sessionData.session_uid,
+      });
+
+      if (res.type === ApiRes.SUCCESS) {
+        setMessages((s) => [...res.data.reverse(), ...s]);
+      }
+    } catch (err) {
+      console.log("Err", err);
+    }
+  }, [sessionData]);
+
+  useEffect(() => {
+    if (!newChat) {
+      fetchMessages();
+    }
+  }, [fetchMessages, newChat]);
+
+  //MANAGE REAL TIME SESSION SYSNC
 
   // useEffect(() => {
-  //   scrollToBottom();
-  // }, [messages]);
+  //   return () => {
+  //     if (sessionData) {
+  //       const lastMessage = messages[messages.length - 1];
 
-  const handleScroll = () => {
-    // Check if the user has scrolled up manually
-    if (chatContainerRef.current) {
-      // setUserScrolledUp(chatContainerRef.current.scrollTop + chatContainerRef.current.clientHeight < chatContainerRef.current.scrollHeight);
+  //       let renderMessage: RenderMessageItem | null = null;
+
+  //       if (lastMessage) {
+  //         renderMessage = getRenderMessageItem(lastMessage);
+  //       }
+
+  //       setSessions((s) => {
+  //         const newS = [...s];
+
+  //         const presentIndex = newS.findIndex((i) => i.session_uid === sessionData?.session_uid);
+
+  //         if (presentIndex !== -1) {
+  //           newS[presentIndex] = {
+  //             ...newS[presentIndex],
+  //             updatedAt: lastMessage?.createdAt || new Date().toISOString(),
+  //             last_message: renderMessage?.text || "",
+  //             createdAt: lastMessage?.createdAt || new Date().toISOString(),
+  //           };
+  //         } else {
+  //           newS.push({
+  //             updatedAt: lastMessage?.createdAt || new Date().toISOString(),
+  //             last_message: renderMessage?.text || "",
+  //             session_uid: sessionData?.session_uid,
+  //             createdAt: lastMessage?.createdAt || new Date().toISOString(),
+  //             id: sessionData?.session_uid,
+  //           });
+  //         }
+
+  //         return newS;
+  //       });
+  //     }
+  //   };
+  // }, [messages, sessionData, setSessions]);
+
+  const handleSessionCreated = useCallback((data: SessionData) => {
+    setSessionData(data);
+  }, []);
+
+  const handleMessageCompose = useCallback((data: MessagesComponseEventResponse) => {
+    if (data.type == "start" && data.content?.type === "loading") {
+      setLoadingStatus("loading");
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    socketManager.socket.on(SocketListenE.sessionCreated, handleSessionCreated);
+    socketManager.socket.on(SocketListenE.messageReceived, handleMessageReceived);
+    socketManager.socket.on(SocketListenE.messageCompose, handleMessageCompose);
+
+    return () => {
+      socketManager.socket.off(SocketListenE.sessionCreated, handleSessionCreated);
+      socketManager.socket.off(SocketListenE.messageReceived, handleMessageReceived);
+      socketManager.socket.off(SocketListenE.messageCompose, handleMessageCompose);
+    };
+  }, [handleSessionCreated, handleMessageReceived, handleMessageCompose]);
+
+  useEffect(() => {
+    return () => {
+      clearPrams();
+    };
+  }, [clearPrams]);
+
+  /**
+   * REF MANAGEMENT
+   */
 
   return (
     <Root>
-      <AnimatedHeader style={{ background: layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary, height: TAB_THEME.headerHeights.root }} className="ygpt-w-full ygpt-flex ygpt-justify-between ygpt-items-center padX ygpt-h-full ">
+      <AnimatedHeader style={{ background: layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary, height: TAB_THEME.headerHeights.chat }} className="ygpt-w-full ygpt-flex ygpt-justify-between ygpt-items-center padX ygpt-h-full ">
         <div>
           <IconBtn onClick={() => navigate("messagesTab")} color="#ffffff">
             <FiArrowLeft size={20} />
           </IconBtn>
         </div>
-
+        {/* 
         <IconBtn color="#ffffff">
           <RiDeleteBin6Fill size={20} />
-        </IconBtn>
+        </IconBtn> */}
       </AnimatedHeader>
 
-      <Middle>
-        <ScrollDiv
-          color={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary}
-          className="content ygpt-overflow-x-hidden   ygpt-overflow-y-auto ygpt-flex-1 ygpt-py-2 ygpt-flex ygpt-flex-col  ygpt-items-start ygpt-gap-3"
-          style={{ transition: `scroll-behavior 0.5s ease-in-out` }}
-          ref={chatContainerRef}
-          onScroll={handleScroll}
-        >
-          {messages.map((i) => {
-            return <ChatItem rateMessage={() => {}} key={i.localId || i.content.message_id} {...i} />;
-          })}
-          {/* {loadingStatus && <>{loadingStatus === "loading" && <span>Loading.....</span>}</>} */}
-        </ScrollDiv>
-      </Middle>
+      {/* <Middle> */}
+      <ScrollDiv
+        color={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary}
+        className="content ygpt-overflow-x-hidden   ygpt-overflow-y-auto ygpt-flex-1 ygpt-py-2 ygpt-flex ygpt-flex-col  ygpt-items-start ygpt-gap-3"
+        style={{ transition: `scroll-behavior 0.5s ease-in-out` }}
+      >
+        {messages.length === 0 && (
+          <>
+            <ChatItem
+              rateMessage={() => {}}
+              message={{
+                createdAt: null,
+                content: { message: layout?.welcomeMessage["en"] },
+                from: "assistant",
+                localId: "welcome",
+              }}
+            />
+          </>
+        )}
+        {messages.map((i) => {
+          return <ChatItem rateMessage={() => {}} key={i.localId || i.content?.message_id || i.id} message={i} />;
+        })}
+        {/* {loadingStatus && <>{loadingStatus === "loading" && <span>Loading.....</span>}</>} */}
+      </ScrollDiv>
+      {/* </Middle> */}
       <Bottom>
         <ChatActionBar
           notifyTyping={(is) => {
             console.log(is);
           }}
           sendMessage={(txt) => {
-            console.log(txt);
+            sendMessage(txt);
           }}
         />
       </Bottom>
@@ -91,7 +269,5 @@ const Root = styled.div`
   flex-direction: column;
   height: 100%;
 `;
-const Middle = styled.div`
-  flex: 1;
-`;
+
 const Bottom = styled.div``;

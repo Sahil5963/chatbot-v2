@@ -6,9 +6,11 @@ import SendIcon from "../../../(components)/icons/SendIcon";
 import SocialMediaBtns from "../../(components)/SocialMediaBtns";
 import { useWidget } from "../../../context/WidgetContext";
 import { YOUR_GPT_LAYOUT } from "../../../utils/constants";
+import { useTabChatbot } from "../../context/TabContext";
 
 export default function Home() {
   const { layout } = useWidget();
+  const { sendQueryFromOutside } = useTabChatbot();
   const [text, setText] = useState("");
 
   return (
@@ -30,12 +32,23 @@ export default function Home() {
         {/* SEND QUERY  */}
 
         <div className="ygpt-relative ygpt-w-full  ygpt-flex ygpt-items-center ygpt-mb-4">
-          <TextArea placeholder="Type your query..." color={layout?.colors.primary} maxRows={3} onChange={(e: any) => setText(e.target.value)} />
+          <TextArea
+            onKeyDown={(e: any) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                text.trim() && sendQueryFromOutside(text.trim());
+              }
+            }}
+            placeholder="Type your query..."
+            color={layout?.colors.primary}
+            maxRows={3}
+            onChange={(e: any) => setText(e.target.value)}
+          />
           <div
             className={` ygpt-cursor-pointer hover:ygpt-bg-blue-100 ygpt-text-blue-600  ygpt-h-[38px] ygpt-aspect-square ygpt-rounded-full ygpt-overflow-hidden ygpt-flex ygpt-justify-center ygpt-items-center ygpt-absolute ygpt-right-1  ${
               text ? "ygpt-scale-100 ygpt-opacity-100" : "ygpt-scale-[0.5] ygpt-opacity-0 ygpt-pointer-events-none"
             } ygpt-transition-all ygpt-ease-in-quint`}
             onClick={() => {
+              text.trim() && sendQueryFromOutside(text.trim());
               setText("");
             }}
           >

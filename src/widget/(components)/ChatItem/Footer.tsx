@@ -2,14 +2,14 @@ import { HiThumbDown, HiThumbUp } from "react-icons/hi";
 import { styled } from "styled-components";
 import LearnMoreLinks from "./LearnMoreLinks";
 import { useChatbot } from "../../context/ChatbotContext";
-import { MessageD } from "../../types/message";
+import { MessageD, RenderMessageItem } from "../../types/message";
 import { HIDE_FEEDBACK } from "../../utils/helper";
 
-export default function Footer({ message, rateMessage }: { message: MessageD; rateMessage: (data: { messageId: number; rate: "1" | "0" }) => any }) {
+export default function Footer({ message, rateMessage }: { message: RenderMessageItem; rateMessage: (data: { messageId: number; rate: "1" | "0" }) => any }) {
   const { isFullPage } = useChatbot();
 
-  const rated = message.rated;
-  const message_id = message.content.message_id;
+  const rated = message.rate;
+  const message_id = message.id;
   const links = message.links || [];
 
   if (message.from !== "assistant") {

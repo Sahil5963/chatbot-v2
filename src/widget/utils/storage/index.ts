@@ -1,9 +1,36 @@
 import { MessageD } from "../../types/message";
 import { SessionData } from "../../types/socket";
 
-export const StorageManager = {
-  setStorage: ({ sessionData, messages, widgetUid }: { sessionData?: SessionData; messages?: MessageD[]; widgetUid: string }) => {
-    let mainOb: any = {};
+type DataStoreT = {
+  visitorUid?: string;
+  compactLayout: {
+    sessionData: SessionData | null;
+    messages: MessageD[];
+  };
+  tabLayout: {
+    sessions: SessionData[];
+  };
+};
+
+type StorageManagerT = {
+  setStorage: (data: { compactSession?: SessionData; compactMessages?: MessageD[]; tabSessions?: SessionData[]; widgetUid: string; visitorUid?: string }) => void;
+  getStorage: (widgetUid: string) => DataStoreT | null;
+  clearCompactSession: (widgetUid: string) => void;
+  clearTabSession: (widgetUid: string) => void;
+  clearStorage: (widgetUid: string) => void;
+};
+
+export const StorageManager: StorageManagerT = {
+  setStorage: ({ compactSession, compactMessages, tabSessions, widgetUid, visitorUid }) => {
+    let mainOb: DataStoreT = {
+      compactLayout: {
+        sessionData: null,
+        messages: [],
+      },
+      tabLayout: {
+        sessions: [],
+      },
+    };
 
     const objStr = localStorage.getItem(`yourgpt-chatbot-${widgetUid}`);
 
@@ -13,23 +40,68 @@ export const StorageManager = {
       };
     }
 
-    if (sessionData) {
-      mainOb.sessionData = sessionData;
+    if (compactSession) {
+      mainOb.compactLayout.sessionData = compactSession;
     }
-    if (messages) {
-      mainOb.messages = messages;
+    if (compactMessages) {
+      mainOb.compactLayout.messages = compactMessages;
     }
+    if (visitorUid) {
+      mainOb.visitorUid = visitorUid;
+    }
+    if (tabSessions) {
+      mainOb.tabLayout.sessions = tabSessions;
+    }
+
     localStorage.setItem(`yourgpt-chatbot-${widgetUid}`, JSON.stringify(mainOb));
   },
 
-  getStorage: (widgetUid: string): { sessionData?: SessionData; messages?: MessageD[] } | null => {
+  getStorage: (widgetUid: string) => {
     const objStr = localStorage.getItem(`yourgpt-chatbot-${widgetUid}`);
-
     if (objStr) {
       return JSON.parse(objStr);
     }
-
     return null;
+  },
+  clearCompactSession: (widgetUid: string) => {
+    const objStr = localStorage.getItem(`yourgpt-chatbot-${widgetUid}`);
+    if (objStr) {
+      let obj = JSON.parse(objStr);
+      if (obj.compactLayout) {
+        obj.compactLayout = {
+          sessionData: null,
+          messages: [],
+        };
+      } else {
+        obj = {
+          ...obj,
+          compactLayout: {
+            sessionData: null,
+            messages: [],
+          },
+        };
+      }
+      localStorage.setItem(`yourgpt-chatbot-${widgetUid}`, JSON.stringify(obj));
+    }
+  },
+  clearTabSession: (widgetUid: string) => {
+    const objStr = localStorage.getItem(`yourgpt-chatbot-${widgetUid}`);
+    if (objStr) {
+      let obj = JSON.parse(objStr);
+      if (obj.tabLayout) {
+        obj.tabsLayout = {
+          sessions: [],
+        };
+      } else {
+        obj = {
+          ...obj,
+          tabsLayout: {
+            sessions: [],
+          },
+        };
+      }
+      localStorage.setItem(`yourgpt-chatbot-${widgetUid}`, JSON.stringify(obj));
+    }
   },
   clearStorage: (widgetUid: string) => {
     localStorage.removeItem(`yourgpt-chatbot-${widgetUid}`);

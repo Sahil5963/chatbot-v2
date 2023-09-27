@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import React from "react";
 import { styled } from "styled-components";
 import { useChatbot } from "../context/ChatbotContext";
@@ -26,25 +26,30 @@ export default function ChatbotFrame({ children }: { children: React.ReactNode }
 
   return (
     <>
-      <AnimatePresence>
-        {chatbotPopup && (
-          <Root
-            className={`ygpt-frame ${chatbotPopup ? "show" : ""} ${expanded ? "big" : ""} `}
-            variants={frameVariants}
-            initial="hide"
-            animate="show"
-            exit="hide"
-            transition={{
-              delayChildren: 0.2,
-              damping: 100,
-            }}
-          >
-            <motion.div className="ygpt-relative ygpt-h-full">{children}</motion.div>
-          </Root>
-        )}
-      </AnimatePresence>
+      {/* <AnimatePresence> */}
+      <Root
+        className={`ygpt-frame ${chatbotPopup ? "show" : ""} ${expanded ? "big" : ""} ${chatbotPopup ? "show" : "hide"}`}
+        variants={frameVariants}
+        initial="hide"
+        animate={chatbotPopup ? "show" : "hide"}
+        exit="hide"
+        transition={{
+          delayChildren: 0.2,
+          damping: 100,
+        }}
+      >
+        <motion.div className="ygpt-relative ygpt-h-full">{children}</motion.div>
+      </Root>
+      {/* </AnimatePresence> */}
     </>
   );
 }
 
-const Root = styled(motion.div)``;
+const Root = styled(motion.div)`
+  &.show {
+    pointer-events: all;
+  }
+  &.hide {
+    pointer-events: none;
+  }
+`;

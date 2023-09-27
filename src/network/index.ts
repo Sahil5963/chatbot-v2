@@ -1,5 +1,5 @@
 // const ENDPOINT = "http://192.168.1.2:3000";
-const ENDPOINT = "https://api.yourgpt.ai";
+const ENDPOINT = import.meta.env.VITE_LOCAL ? "http://192.168.18.221:3000" : "https://api.yourgpt.ai";
 
 export const post = ({ route, data, config, endpoint = ENDPOINT }: PostParams): Promise<any> => {
   return fetch(endpoint + route, {

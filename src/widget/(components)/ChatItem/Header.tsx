@@ -1,10 +1,10 @@
 import { BiSolidUserCircle } from "react-icons/bi";
 import { useWidget } from "../../context/WidgetContext";
-import { MessageD } from "../../types/message";
+import { RenderMessageItem } from "../../types/message";
 import ChatbotLogo from "../logos/Chatbot";
 import { YOUR_GPT_LAYOUT } from "../../utils/constants";
 
-export default function Header({ message }: { message: MessageD }) {
+export default function Header({ message }: { message: RenderMessageItem }) {
   const { setting, layout } = useWidget();
   const renderHead = () => {
     switch (message.from) {
@@ -26,10 +26,10 @@ export default function Header({ message }: { message: MessageD }) {
         return (
           <div className="ygpt-flex ygpt-gap-1 ygpt-items-center ">
             <div className="ygpt-h-[30px] ygpt-aspect-square ygpt-items-center ygpt-flex ygpt-justify-center ygpt-text-gray-600 ygpt-bg-gray-200 ygpt-rounded-full ygpt-overflow-hidden">
-              {message.operator?.profile_pic ? <img src={message.operator?.profile_pic} className="ygpt-h-full ygpt-w-full ygpt-object-cover" /> : <BiSolidUserCircle size={24} />}
+              {message.user?.pic ? <img src={message.user.pic} className="ygpt-h-full ygpt-w-full ygpt-object-cover" /> : <BiSolidUserCircle size={24} />}
             </div>
             <div className="ygpt-flex ygpt-flex-col">
-              <div className="ygpt-text-sm ygpt-font-medium">{message.operator?.name || message.operator?.first_name || "Human Operator"}</div>
+              <div className="ygpt-text-sm ygpt-font-medium">{message.user?.name || message.user?.fName || "Human Operator"}</div>
               {/* <div className="y ygpt-text-xs ygpt-text-zinc-600">Operator</div> */}
             </div>
           </div>

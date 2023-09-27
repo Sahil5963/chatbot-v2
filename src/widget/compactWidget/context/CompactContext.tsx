@@ -1,22 +1,20 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { MessageD } from "../../types/message";
+import { MessageD, MessagesLoadingStatus } from "../../types/message";
 import { useChatbot } from "../../context/ChatbotContext";
 import { StorageManager } from "../../utils/storage";
 import socketManager from "../../utils/socket";
-import { MessageEventResponse, MessagesComponseEventResponse } from "../../types/socket";
-import { playSound } from "../../utils/helper";
-import { getStreamData } from "../../utils";
+import { MessagesComponseEventResponse, SessionData } from "../../types/socket";
 import { SocketListenE } from "../../types/enum/socket";
-
-type LoadingStatus = "loading" | "typing" | null;
+import useHandleMessageReceived from "../../hooks/useReceivedMessageHandle";
 
 type CompactContextType = {
   messages: MessageD[];
   setMessages: React.Dispatch<React.SetStateAction<MessageD[]>>;
   sendMessage: (message: string) => void;
-  loadingStatus: LoadingStatus;
+  loadingStatus: MessagesLoadingStatus;
   rateMessage: ({ rate, messageId }: { rate: "1" | "0"; messageId: any }) => void;
   unseenCount: number;
+  clearSession: () => any;
 };
 
 const CompactContext = React.createContext<CompactContextType>({} as CompactContextType);
@@ -24,7 +22,7 @@ const CompactContext = React.createContext<CompactContextType>({} as CompactCont
 export const useCompactChatbot = () => React.useContext(CompactContext);
 
 export default function CompactChatbotProvider({ children }: { children: React.ReactNode }) {
-  const { chatbotPopup, sessionData, widgetUid, chatbotUid, socketState, browserTabActive } = useChatbot();
+  const { chatbotPopup, widgetUid, chatbotUid, socketState, visitorUid } = useChatbot();
 
   /**
    * CONFIG
@@ -32,13 +30,25 @@ export default function CompactChatbotProvider({ children }: { children: React.R
 
   const [messages, setMessages] = useState<MessageD[]>([]);
 
+  const [sessionData, setSessionData] = useState<SessionData | null>(null);
+
   const [pendingMessageQueue, setPendingMessageQueue] = useState<MessageD[]>([]);
 
-  const [loadingStatus, setLoadingStatus] = useState<LoadingStatus>(null);
+  const [loadingStatus, setLoadingStatus] = useState<MessagesLoadingStatus>(null);
 
   //TEMP STATES
 
   const [unseenCount, setUnseenCount] = useState(0);
+
+  const handleMessageReceived = useHandleMessageReceived({
+    chatbotPopup,
+    widgetUid,
+    messages,
+    sessionData,
+    setLoadingStatus,
+    setMessages,
+    setUnseenCount,
+  });
 
   /**
    * EXTRA
@@ -56,8 +66,8 @@ export default function CompactChatbotProvider({ children }: { children: React.R
   useEffect(() => {
     if (sessionData && widgetUid) {
       StorageManager.setStorage({
-        sessionData,
         widgetUid,
+        compactSession: sessionData,
       });
     }
   }, [sessionData, widgetUid]);
@@ -65,7 +75,7 @@ export default function CompactChatbotProvider({ children }: { children: React.R
   useEffect(() => {
     if (messages.length > 0 && widgetUid) {
       StorageManager.setStorage({
-        messages,
+        compactMessages: messages,
         widgetUid,
       });
     }
@@ -74,132 +84,33 @@ export default function CompactChatbotProvider({ children }: { children: React.R
   useEffect(() => {
     if (widgetUid) {
       const stored = StorageManager.getStorage(widgetUid);
-
-      if (stored?.messages) {
-        setMessages(stored.messages);
+      if (stored?.compactLayout?.messages && Array.isArray(stored.compactLayout.messages)) {
+        setMessages(stored.compactLayout.messages);
       }
     }
   }, [widgetUid]);
-
-  /**
-   * SOCKET EMMITERS
-   */
 
   /**
    * SOCKET HANDLES
    */
 
   useEffect(() => {
-    if (socketState === "joined") {
-      if (pendingMessageQueue.length > 0 && sessionData) {
-        pendingMessageQueue.forEach((message) => {
-          if (!message.content.message?.trim()) return;
-          socketManager.sendMessage({
-            chatbot_uid: chatbotUid,
-            widget_uid: widgetUid,
-            message: message.content.message,
-            flow_id: "",
-            from: "user",
-            origin: "chat",
-            session_uid: sessionData.session_uid,
-            type: "text",
-          });
-          setPendingMessageQueue((s) => s.filter((i) => i.content.message_id !== message.content.message_id));
+    if (pendingMessageQueue.length > 0 && sessionData) {
+      pendingMessageQueue.forEach((message) => {
+        if (!message.content.message?.trim()) return;
+        socketManager.sendMessage({
+          widget_uid: widgetUid,
+          message: message.content.message,
+          flow_id: "",
+          from: "user",
+          origin: "chat",
+          session_uid: sessionData.session_uid,
+          type: "text",
         });
-      }
+        setPendingMessageQueue((s) => s.filter((i) => i.content.message_id !== message.content.message_id));
+      });
     }
   }, [socketState, pendingMessageQueue, chatbotUid, widgetUid, sessionData]);
-
-  const handleMessageReceived = useCallback(
-    (data: MessageEventResponse) => {
-      setLoadingStatus(null);
-
-      if (!sessionData) {
-        return;
-      }
-
-      if (!browserTabActive) {
-        playSound();
-      }
-
-      if (!chatbotPopup) {
-        setUnseenCount((s) => s + 1);
-      }
-
-      if (data.type === "stream" && data.content?.stream_url) {
-        const streamIndex = messages.length;
-
-        setMessages((s) => {
-          const newMessages = [...s];
-          newMessages.push({
-            ...data,
-            loadingStatus: "streaming",
-            localId: Date.now(),
-            from: "assistant",
-            createdAt: null,
-            content: {
-              message: "",
-            },
-          });
-
-          return newMessages;
-        });
-
-        getStreamData({
-          url: data.content.stream_url,
-          onUpdate: (res) => {
-            console.log(res);
-
-            setLoadingStatus(null);
-
-            socketManager.sendCompose({
-              chatbot_uid: chatbotUid,
-              from: "assistant",
-              session_uid: sessionData.session_uid,
-              widget_uid: widgetUid,
-              type: res.finished ? "stop" : "start",
-              content: {
-                message: res.res,
-                type: "streaming",
-              },
-            });
-
-            setMessages((s) => {
-              const newMessages = [...s];
-              newMessages[streamIndex] = {
-                ...newMessages[streamIndex],
-                loadingStatus: res.finished ? null : "streaming",
-                content: {
-                  ...newMessages[streamIndex].content,
-                  message: res.res,
-                  message_id: Number(res.messageId || 0) || newMessages[streamIndex].content.message_id || 0,
-                },
-                createdAt: res.finished ? Date.now() : null,
-                links: res.links || newMessages[streamIndex].links || [],
-              };
-
-              console.log([...newMessages].pop(), res);
-
-              return newMessages;
-            });
-          },
-        });
-      } else if (data.type === "text") {
-        setMessages((s) => {
-          return [
-            ...s,
-            {
-              ...data,
-              loadingStatus: null,
-              localId: Date.now(),
-              createdAt: Date.now(),
-            },
-          ];
-        });
-      }
-    },
-    [messages, sessionData, chatbotUid, widgetUid, browserTabActive, chatbotPopup]
-  );
 
   const handleMessageCompose = useCallback((data: MessagesComponseEventResponse) => {
     if (data.type == "start" && data.content?.type === "loading") {
@@ -207,46 +118,63 @@ export default function CompactChatbotProvider({ children }: { children: React.R
     }
   }, []);
 
-  useEffect(() => {
-    socketManager.socket.on(SocketListenE.messageReceived, handleMessageReceived);
-    socketManager.socket.on(SocketListenE.messageCompose, handleMessageCompose);
-    return () => {
-      socketManager.socket.off(SocketListenE.messageReceived, handleMessageReceived);
-      socketManager.socket.off(SocketListenE.messageCompose, handleMessageCompose);
-    };
-  }, [handleMessageReceived, handleMessageCompose]);
-
-  const sendMessage = (message: string) => {
-    if (!message?.trim()) {
-      return;
-    }
-
-    setMessages((s) => [
-      ...s,
-      {
-        localId: Date.now(),
-        loadingStatus: null,
-        content: {
-          message: message,
-        },
-        from: "user",
-        createdAt: Date.now(),
-      },
-    ]);
-
-    if (sessionData && message?.trim()) {
-      socketManager.sendMessage({
-        chatbot_uid: chatbotUid,
+  const createSession = useCallback(() => {
+    if (visitorUid && widgetUid) {
+      socketManager.createSession({
         widget_uid: widgetUid,
-        message: message,
-        flow_id: "",
-        from: "user",
-        origin: "chat",
-        session_uid: sessionData?.session_uid,
-        type: "text",
+        visitor_uid: visitorUid,
       });
     }
-  };
+  }, [visitorUid, widgetUid]);
+
+  const sendMessage = useCallback(
+    (message: string) => {
+      if (!message?.trim()) {
+        return;
+      }
+
+      if (!sessionData) {
+        createSession();
+        setPendingMessageQueue((s) => [
+          ...s,
+          {
+            content: {
+              message: message,
+            },
+            localId: Date.now(),
+            createdAt: Date.now(),
+            from: "user",
+          },
+        ]);
+      }
+
+      setMessages((s) => [
+        ...s,
+        {
+          localId: Date.now(),
+          loadingStatus: null,
+          content: {
+            message: message,
+          },
+          from: "user",
+          createdAt: Date.now(),
+        },
+      ]);
+
+      if (sessionData && message?.trim()) {
+        socketManager.sendMessage({
+          widget_uid: widgetUid,
+          message: message,
+          flow_id: "",
+          from: "user",
+          origin: "chat",
+          session_uid: sessionData?.session_uid,
+          type: "text",
+        });
+      }
+    },
+    [sessionData, widgetUid, createSession]
+  );
 
   const rateMessage = ({ rate, messageId }: { rate: "1" | "0"; messageId: any }) => {
     setMessages((s) => {
@@ -263,6 +191,32 @@ export default function CompactChatbotProvider({ children }: { children: React.R
     });
   };
 
+  const handleSessionCreated = useCallback((data: SessionData) => {
+    setSessionData(data);
+  }, []);
+
+  useEffect(() => {
+    socketManager.socket.on(SocketListenE.sessionCreated, handleSessionCreated);
+    socketManager.socket.on(SocketListenE.messageReceived, handleMessageReceived);
+    socketManager.socket.on(SocketListenE.messageCompose, handleMessageCompose);
+
+    return () => {
+      socketManager.socket.off(SocketListenE.sessionCreated, handleSessionCreated);
+      socketManager.socket.off(SocketListenE.messageReceived, handleMessageReceived);
+      socketManager.socket.off(SocketListenE.messageCompose, handleMessageCompose);
+    };
+  }, [handleSessionCreated, handleMessageReceived, handleMessageCompose]);
+
+  const clearSession = () => {
+    setSessionData(null);
+    setMessages([]);
+    StorageManager.clearCompactSession(widgetUid);
+    socketManager.createSession({
+      visitor_uid: visitorUid,
+      widget_uid: widgetUid,
+    });
+  };
+
   return (
     <CompactContext.Provider
       value={{
@@ -272,6 +226,7 @@ export default function CompactChatbotProvider({ children }: { children: React.R
         loadingStatus,
         rateMessage,
         unseenCount,
+        clearSession,
       }}
     >
       {children}

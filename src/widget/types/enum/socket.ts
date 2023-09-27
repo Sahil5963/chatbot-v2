@@ -4,6 +4,10 @@ export enum SocketEmitE {
   sendMessage = "chatbot:message:send",
   history = "chatbot:conversation:history",
   compose = "chatbot:message:compose",
+
+  //NEW
+  createVisitor = "chatbot:visitor:create",
+  joinVisitor = "chatbot:visitor:join",
 }
 export enum SocketListenE {
   sessionCreated = "chatbot:session:created",
@@ -11,4 +15,7 @@ export enum SocketListenE {
   messageReceived = "chatbot:message:received",
   messageCompose = "chatbot:message:compose",
   connect = "connect",
+
+  //NEW
+  visitorCreated = "chatbot:visitor:created",
 }

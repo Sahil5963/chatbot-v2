@@ -16,7 +16,6 @@ export const getStreamData = ({ url, onUpdate }: { url: string; onUpdate: (d: { 
     };
     source.onerror = function () {
       source.close();
-      console.log("source.onerror pppp");
       onUpdate({
         res: response,
         finished: true,

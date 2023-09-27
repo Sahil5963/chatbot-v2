@@ -44,3 +44,6 @@ export type WidgetFormField = {
 };
 
 export type WidgetPlace = "showcase" | "chatbot";
+
+export type PlatformTypeD = "ios" | "window" | "linux" | "mac";
+export type DeviceTypeD = "mobile" | "desktop";

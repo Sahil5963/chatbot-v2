@@ -7,10 +7,17 @@ import ChatbotLogo from "../../../(components)/logos/Chatbot";
 import ChatIcon from "../../../(components)/icons/ChatIcon";
 import { useWidget } from "../../../context/WidgetContext";
 import { YOUR_GPT_LAYOUT } from "../../../utils/constants";
+import { useTabChatbot } from "../../context/TabContext";
+import { useEffect } from "react";
 
 export default function Messages() {
   const { navigate } = useTabUiChatbot();
+  const { sessions, fetchSessions, refreshingSessions, loadingSessions } = useTabChatbot();
   const { layout } = useWidget();
+
+  useEffect(() => {
+    fetchSessions(true);
+  }, [fetchSessions]);
 
   return (
     <div className="ygpt-relative ygpt-h-full ygpt-flex-1 ygpt-flex ygpt-flex-col">
@@ -22,13 +29,18 @@ export default function Messages() {
       </AnimatedHeader>
 
       <div className="ygpt-flex-1 ygpt-overflow-auto ygpt-pb-24">
-        {[1, 2, 3, 4, 5, 6, 7].map((i) => {
+        {refreshingSessions && <span className="ygpt-text-sm ygpt-text-gray-400 ygpt-text-center">Updating...</span>}
+        {loadingSessions && <span className="ygpt-text-sm ygpt-text-gray-400 ygpt-text-center">Loading...</span>}
+
+        {sessions.map((i) => {
           return (
             <ChatItem
               onClick={() => {
-                navigate("chatScreen");
+                navigate("chatScreen", {
+                  sessionData: i,
+                });
               }}
-              key={i}
+              key={i.session_uid}
               color={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary}
             >
               <div className="left">
@@ -37,10 +49,10 @@ export default function Messages() {
                 </div>
               </div>
               <div className="right">
-                <div className="text ygpt-line-clamp-1">No problem, I will check thr pricing getting things done</div>
+                <div className="text ygpt-line-clamp-1">{i.last_message}</div>
                 <div className="footer">
-                  <span className="name ">AI Bot</span>
-                  <span className="time">12:30 PM</span>
+                  {/* <span className="name ">{i. } AI Bot</span> */}
+                  <span className="time">{i.updatedAt}</span>
                 </div>
               </div>
             </ChatItem>

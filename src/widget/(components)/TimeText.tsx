@@ -7,7 +7,7 @@ type TimeTextProps = {
 export default function TimeText({ time }: TimeTextProps) {
   function timeAgo(lastMessageTimestamp: number | string): string {
     const currentTime = new Date().getTime();
-    const timestamp = typeof lastMessageTimestamp === "string" ? Number(lastMessageTimestamp) : lastMessageTimestamp;
+    const timestamp = typeof lastMessageTimestamp === "string" ? new Date(lastMessageTimestamp).getTime() : lastMessageTimestamp;
     const seconds = Math.floor((currentTime - timestamp) / 1000);
 
     if (seconds < 3) {
@@ -49,14 +49,14 @@ export default function TimeText({ time }: TimeTextProps) {
     return interval + " year" + (interval === 1 ? "" : "s") + " ago";
   }
 
-  const [t, setT] = useState<string>(timeAgo(typeof time === "string" ? Number(time) : time));
+  const [t, setT] = useState<string>(timeAgo(typeof time === "string" ? time : Number(time)));
 
   useEffect(() => {
     let tm: any;
 
     if (time) {
       tm = setInterval(() => {
-        setT(timeAgo(typeof time === "string" ? Number(time) : time));
+        setT(timeAgo(typeof time === "string" ? time : Number(time)));
       }, 1000 * 10);
     } else {
       if (tm) {

@@ -14,3 +14,26 @@ export const getChatbotSettingApi = (data: { project_uid: string; widget_uid: st
     },
   });
 };
+export const getSessionsApi = (data: { visitor_uid: string; page?: number; limit?: number; orderBy: "asc" | "desc" }) => {
+  return post({
+    route: `/chatbot/v1/getSessionByVisitorId`,
+    data: JSON.stringify(data),
+    config: {
+      headers: {
+        "Content-type": "application/json",
+      },
+    },
+  });
+};
+
+export const getSessionMessagesApi = (data: { session_uid: string }) => {
+  return post({
+    route: `/chatbot/v1/getSessionMessage`,
+    data: JSON.stringify(data),
+    config: {
+      headers: {
+        "Content-type": "application/json",
+      },
+    },
+  });
+};
