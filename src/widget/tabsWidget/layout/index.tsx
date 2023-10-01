@@ -10,10 +10,13 @@ import ChatIcon from "../../(components)/icons/ChatIcon";
 import AccountIcon from "../../(components)/icons/AccountIcon";
 import { BottomTabsD } from "../../types/layout";
 import { TAB_THEME } from "../ui";
+import { HIDE_FOOTER } from "../../utils/helper";
+import { useChatbot } from "../../context/ChatbotContext";
 
 export default function TabsLayout() {
   const { activeRoute, navigate } = useTabUiChatbot();
   const { layout } = useWidget();
+  const { isFullPage } = useChatbot();
 
   let activeScreen = <Home />;
 
@@ -98,6 +101,28 @@ export default function TabsLayout() {
     <Root>
       <Content>{activeScreen}</Content>
       <Tabs className="ygpt-flex ygpt-justify-between [&>div]:ygpt-flex-1">{TABS}</Tabs>
+      {HIDE_FOOTER && isFullPage ? null : (
+        <div className="ygpt-text-xs ygpt-flex ygpt-justify-center ygpt-bg-gray-50 ygpt-py-[4px]">
+          <div>
+            <span style={{ opacity: "50%", fontSize: "inherit" }}>Powered by </span>
+            <a
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+                fontSize: 14,
+                opacity: "70%",
+                fontWeight: "bold",
+              }}
+              href={`https://yourgpt.ai/chatbot`}
+            >
+              {/* {chatbotSettings?.branding_title} */}
+              YourGPT
+            </a>
+          </div>
+        </div>
+      )}
     </Root>
   );
 }

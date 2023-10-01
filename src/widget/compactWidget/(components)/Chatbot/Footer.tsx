@@ -37,9 +37,10 @@ export default function Footer({ onSend }: { onSend: (text: string) => void }) {
                   fontSize: 14,
                   opacity: "70%",
                 }}
-                href={chatbotSettings?.branding_link}
+                href={`https://yourgpt.ai/chatbot`}
               >
-                {chatbotSettings?.branding_title}
+                {/* {chatbotSettings?.branding_title} */}
+                YourGPT
               </a>
             </strong>
           </div>
