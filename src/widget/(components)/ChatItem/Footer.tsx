@@ -1,5 +1,5 @@
 // import { HiThumbDown, HiThumbUp } from "react-icons/hi";
-// import { styled } from "styled-components";
+// import  styled  from "styled-components";
 import LearnMoreLinks from "./LearnMoreLinks";
 // import { useChatbot } from "../../context/ChatbotContext";
 import { RenderMessageItem } from "../../types/message";

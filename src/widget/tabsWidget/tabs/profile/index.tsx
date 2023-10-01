@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import styled from "styled-components";
 import { TAB_THEME } from "../../ui";
 import AnimatedHeader from "../../(components)/AnimatedHeader";
 import ScanIcon from "../../../(components)/icons/ScanIcon";

@@ -1,6 +1,6 @@
 import { RiDeleteBin6Fill, RiExpandLeftLine, RiExpandRightLine } from "react-icons/ri";
 import { IoMdClose } from "react-icons/io";
-import { styled } from "styled-components";
+import styled from "styled-components";
 import { useIntl } from "react-intl";
 import { useWidget } from "../context/WidgetContext";
 import { YOUR_GPT_LAYOUT } from "../utils/constants";

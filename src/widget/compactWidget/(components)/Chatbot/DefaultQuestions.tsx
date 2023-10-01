@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { padX } from ".";
-import { styled } from "styled-components";
+import styled from "styled-components";
 import { useCompactChatbot } from "../../context/CompactContext";
 import { useWidget } from "../../../context/WidgetContext";
 import { YOUR_GPT_LAYOUT } from "../../../utils/constants";

@@ -1,5 +1,5 @@
 import { marked } from "marked";
-import { styled } from "styled-components";
+import styled from "styled-components";
 
 export default function MDText({ text }: { text: string }) {
   return (

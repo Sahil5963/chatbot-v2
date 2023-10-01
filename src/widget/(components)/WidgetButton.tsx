@@ -2,14 +2,17 @@ import ChatbotLogo from "./logos/Chatbot";
 import { FaChevronDown } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useChatbot } from "../context/ChatbotContext";
+import { useWidget } from "../context/WidgetContext";
 
 export default function WidgetButton() {
   const { chatbotPopup, setChatbotPopup, unseenCount } = useChatbot();
+  const { layout } = useWidget();
 
   return (
     <div
+      style={{ background: layout?.colors.primary, color: layout?.colors.textOnPrimary }}
       onClick={() => setChatbotPopup((s) => !s)}
-      className=" ygpts-widgetBtn ygpt-h-[48px] ygpt-w-[48px] ygpt-rounded-full  ygpt-fixed ygpt-flex ygpt-justify-center ygpt-items-center hover:ygpt-scale-105 ygpt-transition-all ygpt-cursor-pointer active:ygpt-scale-[0.88] [&>span]:ygpt-absolute "
+      className="ygpts-widgetBtn ygpt-h-[48px] ygpt-w-[48px] ygpt-rounded-full  ygpt-fixed ygpt-flex ygpt-justify-center ygpt-items-center hover:ygpt-scale-105 ygpt-transition-all ygpt-cursor-pointer active:ygpt-scale-[0.88] [&>span]:ygpt-absolute "
     >
       <AnimatePresence>
         {chatbotPopup ? (

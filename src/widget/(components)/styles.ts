@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import styled from "styled-components";
 
 export const ScrollDiv = styled.div<{ color: string }>`
   /* Customize the scrollbar's track */

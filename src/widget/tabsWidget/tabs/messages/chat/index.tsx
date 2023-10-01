@@ -1,6 +1,6 @@
 import { FiArrowLeft } from "react-icons/fi";
 
-import { styled } from "styled-components";
+import styled from "styled-components";
 import { TAB_THEME } from "../../../ui";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTabUiChatbot } from "../../../context/TabUiContext";

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { styled } from "styled-components";
+import styled from "styled-components";
 import { TAB_THEME } from "../../ui";
 import { useTabUiChatbot } from "../../context/TabUiContext";
 import AnimatedHeader from "../../(components)/AnimatedHeader";

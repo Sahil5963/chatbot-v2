@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import styled from "styled-components";
 import { WidgetSocialItemType } from "../../types/layout/global";
 
 export default function SocialMediaBtns({ items = [] }: { items?: WidgetSocialItemType[] }) {

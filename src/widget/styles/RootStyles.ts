@@ -15,8 +15,6 @@ export const RootStyles = styled.div<{ layout: WidgetLayoutD }>`
     &-widgetBtn {
       right: 20px;
       bottom: 20px;
-      color: ${(p) => p.layout?.colors.textOnPrimary};
-      background: ${(p) => p.layout?.colors.primary};
     }
     &-frame {
       z-index: 9999;

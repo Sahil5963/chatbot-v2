@@ -2,7 +2,7 @@ import Messages from "../tabs/messages";
 import Home from "../tabs/home";
 import Profile from "../tabs/profile";
 import { useMemo } from "react";
-import { styled } from "styled-components";
+import styled from "styled-components";
 import { useWidget } from "../../context/WidgetContext";
 import { useTabUiChatbot } from "../context/TabUiContext";
 import HomeIcon from "../../(components)/icons/HomeIcon";

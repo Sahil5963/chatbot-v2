@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { styled } from "styled-components";
+import styled from "styled-components";
 import { useWidget } from "../../context/WidgetContext";
 import { YOUR_GPT_LAYOUT, YOUR_GPT_SETTING } from "../../utils/constants";
 import ChatbotLogo from "../../(components)/logos/Chatbot";

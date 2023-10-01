@@ -1,6 +1,6 @@
 import { useState } from "react";
 import HomeHeader from "../../(components)/HomeHeader";
-import { styled } from "styled-components";
+import styled from "styled-components";
 import AutoResize from "react-textarea-autosize";
 import SendIcon from "../../../(components)/icons/SendIcon";
 import SocialMediaBtns from "../../(components)/SocialMediaBtns";
