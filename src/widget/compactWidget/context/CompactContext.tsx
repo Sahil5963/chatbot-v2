@@ -27,7 +27,7 @@ const CompactContext = React.createContext<CompactContextType>({} as CompactCont
 export const useCompactChatbot = () => React.useContext(CompactContext);
 
 export default function CompactChatbotProvider({ children }: { children: React.ReactNode }) {
-  const { chatbotPopup, widgetUid, chatbotUid, socketState, visitorUid } = useChatbot();
+  const { chatbotPopup, widgetUid, socketState, visitorUid } = useChatbot();
   const { setting } = useWidget();
 
   /**
@@ -133,7 +133,7 @@ export default function CompactChatbotProvider({ children }: { children: React.R
         setPendingMessageQueue((s) => s.filter((i) => i.content.message_id !== message.content.message_id));
       });
     }
-  }, [socketState, pendingMessageQueue, chatbotUid, widgetUid, sessionData]);
+  }, [socketState, pendingMessageQueue, widgetUid, sessionData]);
 
   const handleMessageCompose = useCallback((data: MessagesComponseEventResponse) => {
     if (data.type == "start" && data.content?.type === "loading") {

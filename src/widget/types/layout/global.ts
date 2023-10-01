@@ -64,4 +64,9 @@ export type WidgetLayoutD = {
     key: string;
     visibility: "1" | "0";
   }[];
+  position: {
+    x: number;
+    y: number;
+    align: "left" | "right";
+  };
 };

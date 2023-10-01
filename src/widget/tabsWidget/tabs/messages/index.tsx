@@ -50,6 +50,8 @@ export default function Messages() {
           </div>
         )}
 
+        {!loadingSessions && !refreshingSessions && sessions.length === 0 && <div className="ygpt-text-sm ygpt-flex ygpt-justify-center ygpt-text-center ygpt-py-14 ygpt-text-zinc-600">No messages yet</div>}
+
         {sessions.map((i) => {
           return (
             <ChatItem

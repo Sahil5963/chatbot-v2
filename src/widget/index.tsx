@@ -12,7 +12,7 @@ import { YOUR_GPT_LAYOUT } from "./utils/constants";
 
 const Root = () => {
   const { isFullPage, widgetPlace } = useChatbot();
-  const { layout } = useWidget();
+  const { layout, loading } = useWidget();
 
   const content = useMemo(() => {
     if (layout?.type === "compact") {
@@ -23,6 +23,7 @@ const Root = () => {
       return <></>;
     }
   }, [layout?.type]);
+  if (loading) return null;
 
   return (
     <RootStyles layout={layout || YOUR_GPT_LAYOUT} className={`widgetPlace-${widgetPlace}`}>

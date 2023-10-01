@@ -13,15 +13,19 @@ export const RootStyles = styled.div<{ layout: WidgetLayoutD }>`
 
   .ygpts {
     &-widgetBtn {
-      right: 20px;
-      bottom: 20px;
+      ${({ layout }) => (layout.position?.align === "left" ? `left:${layout.position.x || 20}px;` : `right:${layout.position.x || 20}px;`)}
+      bottom: ${({ layout }) => layout.position.y || 20}px;
+      height: 48px;
+      width: 48px;
     }
     &-frame {
       z-index: 9999;
       position: fixed;
-      bottom: 84px;
-      right: 20px;
-      height: min(704px, 100% - 104px);
+
+      ${({ layout }) => (layout.position?.align === "left" ? `left:${layout.position.x || 20}px;` : `right:${layout.position.x || 20}px;`)}
+
+      bottom: ${({ layout }) => (layout.position.y || 20) + 64}px;
+      height: ${({ layout }) => `min(704px, 100% - ${100 + layout.position.y}px)`};
       min-height: 80px;
       max-width: 400px;
       width: 100%;
@@ -42,7 +46,8 @@ export const RootStyles = styled.div<{ layout: WidgetLayoutD }>`
 
       @media (max-width: 500px) {
         bottom: 0;
-        right: 0;
+        left: 0;
+
         height: 100svh;
         width: 100%;
         max-width: 100%;

@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import React from "react";
 import styled from "styled-components";
 import { useChatbot } from "../context/ChatbotContext";
+import { useWidget } from "../context/WidgetContext";
 
 const frameVariants = {
   show: {
@@ -23,6 +24,7 @@ const frameVariants = {
 
 export default function ChatbotFrame({ children }: { children: React.ReactNode }) {
   const { chatbotPopup, expanded } = useChatbot();
+  const { layout } = useWidget();
 
   return (
     <>
@@ -36,6 +38,9 @@ export default function ChatbotFrame({ children }: { children: React.ReactNode }
         transition={{
           delayChildren: 0.2,
           damping: 100,
+        }}
+        style={{
+          transformOrigin: layout?.position.align === "left" ? "left bottom" : "right bottom",
         }}
       >
         <motion.div className="ygpt-relative ygpt-h-full">{children}</motion.div>

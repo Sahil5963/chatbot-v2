@@ -72,6 +72,11 @@ export const YOUR_GPT_LAYOUT: WidgetLayoutD = {
   welcomeMessage: {
     en: `👋 Hi There!\nHow can i assist you today`,
   },
+  position: {
+    x: 20,
+    y: 20,
+    align: "right",
+  },
 };
 export const YOUR_GPT_SETTING: Partial<ChatbotSettingD> = {
   name: "Your GPT Chatbot",
