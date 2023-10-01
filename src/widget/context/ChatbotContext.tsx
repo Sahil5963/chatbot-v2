@@ -77,7 +77,7 @@ export default function ChatbotProvider({ children, widgetPlace }: { children: R
   const [browserTabActive, setBrowserTabActive] = useState(true);
 
   //TEMP STATES
-  const [chatbotPopup, setChatbotPopup] = useState(false);
+  const [chatbotPopup, setChatbotPopup] = useState(widgetPlace === "showcase" ? true : false);
 
   const [unseenCount, setUnseenCount] = useState(0);
 
