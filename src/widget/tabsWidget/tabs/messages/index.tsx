@@ -64,12 +64,12 @@ export default function Messages() {
               color={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary}
             >
               <div className="left">
-                <div className="avatar">
+                <div className="avatar" style={{ color: layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary }}>
                   <ChatbotLogo />
                 </div>
               </div>
               <div className="right">
-                <div className="text ygpt-line-clamp-1">{i.last_message}</div>
+                <div className="text ygpt-line-clamp-1">{i.last_message || layout?.welcomeMessage["en"]}</div>
                 <div className="footer">
                   {/* <span className="name ">{i. } AI Bot</span> */}
                   <span className="time">

@@ -70,11 +70,13 @@ export const RootStyles = styled.div<{ layout: WidgetLayoutD }>`
     .ygpts-widgetBtn {
       position: absolute;
       right: 0;
+      left: unset;
     }
     .ygpts-frame {
       position: absolute;
       max-width: 100%;
       right: 0;
+      left: unset;
     }
   }
 `;

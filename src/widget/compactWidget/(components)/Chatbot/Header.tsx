@@ -1,6 +1,5 @@
 import { RiDeleteBin6Fill, RiExpandLeftLine, RiExpandRightLine } from "react-icons/ri";
 import { IoMdClose } from "react-icons/io";
-import { useIntl } from "react-intl";
 import { useChatbot } from "../../../context/ChatbotContext";
 import { useWidget } from "../../../context/WidgetContext";
 import ChatbotLogo from "../../../(components)/logos/Chatbot";
@@ -13,7 +12,7 @@ export default function Header() {
   const { clearSession } = useCompactChatbot();
   const { layout, setting } = useWidget();
   // const [languagePopup, setLanguagePopup] = useState(false);
-  const intl = useIntl();
+  // const intl = useIntl();
 
   return (
     <div className="ygpt-px-2 ygpt-py-3 ygpt-flex ygpt-justify-between ygpt-items-center" style={{ background: layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary, color: layout?.colors.textOnPrimary }}>
@@ -27,7 +26,6 @@ export default function Header() {
 
         <div className="content">
           <h4 className="ygpt-font-medium ">{setting?.name || "YourGPT"}</h4>
-          {intl.formatMessage({ id: "home.heading", defaultMessage: "Hello" })}
         </div>
       </div>
 

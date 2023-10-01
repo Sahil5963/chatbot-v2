@@ -230,8 +230,8 @@ const Root = styled.div`
   gap: 12px;
   flex-direction: column;
 
-  max-width: 90%;
-  width: 400px;
+  width: 100%;
+  max-width: 400px;
   background: #fff;
   box-shadow: 1px 2px 12px rgba(0, 0, 0, 0.06);
   border-radius: 16px;
