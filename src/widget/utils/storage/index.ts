@@ -10,10 +10,11 @@ type DataStoreT = {
   tabLayout: {
     sessions: SessionData[];
   };
+  leadSubmitted?: boolean;
 };
 
 type StorageManagerT = {
-  setStorage: (data: { compactSession?: SessionData; compactMessages?: MessageD[]; tabSessions?: SessionData[]; widgetUid: string; visitorUid?: string }) => void;
+  setStorage: (data: { compactSession?: SessionData; compactMessages?: MessageD[]; tabSessions?: SessionData[]; widgetUid: string; visitorUid?: string; leadSubmitted?: boolean }) => void;
   getStorage: (widgetUid: string) => DataStoreT | null;
   clearCompactSession: (widgetUid: string) => void;
   clearTabSession: (widgetUid: string) => void;
@@ -21,7 +22,7 @@ type StorageManagerT = {
 };
 
 export const StorageManager: StorageManagerT = {
-  setStorage: ({ compactSession, compactMessages, tabSessions, widgetUid, visitorUid }) => {
+  setStorage: ({ compactSession, compactMessages, tabSessions, widgetUid, visitorUid, leadSubmitted }) => {
     let mainOb: DataStoreT = {
       compactLayout: {
         sessionData: null,
@@ -30,6 +31,7 @@ export const StorageManager: StorageManagerT = {
       tabLayout: {
         sessions: [],
       },
+      leadSubmitted: leadSubmitted || false,
     };
 
     const objStr = localStorage.getItem(`yourgpt-chatbot-${widgetUid}`);
@@ -52,6 +54,7 @@ export const StorageManager: StorageManagerT = {
     if (tabSessions) {
       mainOb.tabLayout.sessions = tabSessions;
     }
+    mainOb.leadSubmitted = leadSubmitted !== undefined ? leadSubmitted : mainOb.leadSubmitted;
 
     localStorage.setItem(`yourgpt-chatbot-${widgetUid}`, JSON.stringify(mainOb));
   },

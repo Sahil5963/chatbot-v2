@@ -67,7 +67,7 @@ export const getRenderMessageItem = (message: MessageD): RenderMessageItem => {
     text: message?.message || message.content?.message || "",
     id: message.id || message.content?.message_id,
     localId: message.localId,
-    sent: message.from == "user",
+    sent: message.from == "user" || message.send_by == "user",
     from: message.from || message.send_by,
     rate: message.rate || null,
     user: {

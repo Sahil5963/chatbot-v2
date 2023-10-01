@@ -26,7 +26,7 @@ export const getSessionsApi = (data: { visitor_uid: string; page?: number; limit
   });
 };
 
-export const getSessionMessagesApi = (data: { session_uid: string }) => {
+export const getSessionMessagesApi = (data: { session_uid: string; limit?: number; page?: number }) => {
   return post({
     route: `/chatbot/v1/getSessionMessage`,
     data: JSON.stringify(data),

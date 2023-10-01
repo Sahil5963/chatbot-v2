@@ -9,11 +9,17 @@ import { useWidget } from "../../../context/WidgetContext";
 import { YOUR_GPT_LAYOUT } from "../../../utils/constants";
 import { useTabChatbot } from "../../context/TabContext";
 import { useEffect } from "react";
+import Spinner from "../../../(components)/Spinner";
+import TimeText from "../../../(components)/TimeText";
+import { IconBtn } from "../../../(components)/styles";
+import { useChatbot } from "../../../context/ChatbotContext";
+import { IoMdClose } from "react-icons/io";
 
 export default function Messages() {
   const { navigate } = useTabUiChatbot();
   const { sessions, fetchSessions, refreshingSessions, loadingSessions } = useTabChatbot();
   const { layout } = useWidget();
+  const { setChatbotPopup } = useChatbot();
 
   useEffect(() => {
     fetchSessions(true);
@@ -26,11 +32,23 @@ export default function Messages() {
         className="ygpt-flex ygpt-items-center ygpt-justify-center ygpt-h-full"
       >
         <div>Messages</div>
+
+        <div className="ygpt-absolute ygpt-right-2">
+          <IconBtn onClick={() => setChatbotPopup(false)} className="" color={layout?.colors.textOnPrimary || YOUR_GPT_LAYOUT.colors.textOnPrimary}>
+            <IoMdClose size={20} />
+          </IconBtn>
+        </div>
       </AnimatedHeader>
 
       <div className="ygpt-flex-1 ygpt-overflow-auto ygpt-pb-24">
-        {refreshingSessions && <span className="ygpt-text-sm ygpt-text-gray-400 ygpt-text-center">Updating...</span>}
-        {loadingSessions && <span className="ygpt-text-sm ygpt-text-gray-400 ygpt-text-center">Loading...</span>}
+        {/* {refreshingSessions && <span className="ygpt-text-sm ygpt-text-gray-400 ygpt-text-center">Updating...</span>}
+        {loadingSessions && <span className="ygpt-text-sm ygpt-text-gray-400 ygpt-text-center">Loading...</span>} */}
+
+        {(loadingSessions || refreshingSessions) && (
+          <div style={{ color: layout?.colors.primary }} className="ygpt-flex ygpt-items-center ygpt-justify-center ygpt-py-4 ygpt-self-stretch">
+            <Spinner size={22} />
+          </div>
+        )}
 
         {sessions.map((i) => {
           return (
@@ -52,7 +70,9 @@ export default function Messages() {
                 <div className="text ygpt-line-clamp-1">{i.last_message}</div>
                 <div className="footer">
                   {/* <span className="name ">{i. } AI Bot</span> */}
-                  <span className="time">{i.updatedAt}</span>
+                  <span className="time">
+                    <TimeText time={i.createdAt} />
+                  </span>
                 </div>
               </div>
             </ChatItem>

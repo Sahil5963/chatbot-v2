@@ -7,9 +7,14 @@ import { useWidget } from "../../../context/WidgetContext";
 import { ScrollDiv } from "../../../(components)/styles";
 import ChatItem from "../../../(components)/ChatItem";
 import { YOUR_GPT_LAYOUT } from "../../../utils/constants";
+import Chatform from "../../../(components)/ChatForm";
+import { StorageManager } from "../../../utils/storage";
+import { useChatbot } from "../../../context/ChatbotContext";
 
 export default function Chatbot() {
-  const { messages, rateMessage } = useCompactChatbot();
+  const { messages, rateMessage, leadTempMessage, leadPending, setLeadPending, setLeadTempMessage, sendMessage } = useCompactChatbot();
+  const { widgetUid } = useChatbot();
+
   const { layout } = useWidget();
 
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
@@ -37,6 +42,31 @@ export default function Chatbot() {
     }
   };
 
+  const onMessage = (message: string) => {
+    if (!message) return;
+
+    if (leadTempMessage) {
+      return;
+    }
+
+    if (leadPending) {
+      setLeadTempMessage(message);
+      return;
+    }
+
+    sendMessage(message);
+  };
+
+  const onLeadSubmit = () => {
+    setLeadPending(false);
+    StorageManager.setStorage({
+      widgetUid: widgetUid,
+      leadSubmitted: true,
+    });
+    setLeadTempMessage("");
+    sendMessage(leadTempMessage);
+  };
+
   return (
     <div className="ygpt-flex ygpt-h-full ygpt-flex-col">
       {/* <OverlayLoader /> */}
@@ -61,15 +91,32 @@ export default function Chatbot() {
           />
         )}
 
-        <DefaultQuestions />
-
         {/* MESSAGE LIST  */}
         {messages.map((i) => {
           return <ChatItem rateMessage={rateMessage} key={i.localId || i.content.message_id} message={i} />;
         })}
+
+        {leadTempMessage && (
+          <div>
+            <ChatItem
+              message={{
+                createdAt: null,
+                content: { message: leadTempMessage },
+                from: "user",
+                localId: "leadTempMessage",
+              }}
+            />
+            <div className="padX ygpt-mt-2">
+              <Chatform onResize={() => {}} onSubmit={onLeadSubmit} />
+            </div>
+          </div>
+        )}
+
+        <DefaultQuestions onSend={onMessage} />
+
         {/* {loadingStatus && <>{loadingStatus === "loading" && <span>Loading.....</span>}</>} */}
       </ScrollDiv>
-      <Footer />
+      <Footer onSend={onMessage} />
     </div>
   );
 }

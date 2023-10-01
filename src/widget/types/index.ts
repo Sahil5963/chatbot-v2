@@ -1,4 +1,5 @@
 import { WidgetLayoutD } from "./layout/global";
+import { FieldD } from "./lead";
 
 export type ChatbotSettingD = {
   id: number;
@@ -19,13 +20,15 @@ export type ChatbotSettingD = {
   message_text_color: string;
   reply_text_color: string;
   reply_bg_color: string;
-  enable_widget_form: any;
   enable_navigation_tracking: any;
   notify_to: any;
   base_prompt: string;
   createdAt: string;
   updatedAt: string;
   layout?: WidgetLayoutD | null;
+  //LEAD
+  enable_widget_form?: boolean;
+  widget_form_field?: FieldD[];
 };
 
 export type WidgetFormField = {

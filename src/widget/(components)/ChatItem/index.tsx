@@ -10,7 +10,7 @@ import TimeText from "../TimeText";
 import { YOUR_GPT_LAYOUT } from "../../utils/constants";
 import { getRenderMessageItem } from "../../utils/helper";
 
-export default function ChatItem({ rateMessage, message }: { message: MessageD; rateMessage: (data: { messageId: number; rate: "1" | "0" }) => any }) {
+export default function ChatItem({ rateMessage, message }: { message: MessageD; rateMessage?: (data: { messageId: number; rate: "1" | "0" }) => any }) {
   const { layout } = useWidget();
 
   const renderMessage = getRenderMessageItem(message);
@@ -40,7 +40,13 @@ export default function ChatItem({ rateMessage, message }: { message: MessageD; 
         </div>
       </motion.div>
 
-      <div className={`${renderMessage.sent ? "ygpt-text-right" : "ygpt-text-left"}`}>{renderMessage.createdAt && <TimeText time={renderMessage.createdAt} />}</div>
+      <div className={`${renderMessage.sent ? "ygpt-text-right" : "ygpt-text-left"}`}>
+        {renderMessage.createdAt && (
+          <span style={{ fontSize: 10 }}>
+            <TimeText time={renderMessage.createdAt} />
+          </span>
+        )}
+      </div>
       <Footer rateMessage={rateMessage} message={renderMessage} />
     </div>
   );

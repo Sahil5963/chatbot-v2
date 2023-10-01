@@ -6,6 +6,7 @@ import socketManager from "../../utils/socket";
 import { MessagesComponseEventResponse, SessionData } from "../../types/socket";
 import { SocketListenE } from "../../types/enum/socket";
 import useHandleMessageReceived from "../../hooks/useReceivedMessageHandle";
+import { useWidget } from "../../context/WidgetContext";
 
 type CompactContextType = {
   messages: MessageD[];
@@ -15,6 +16,10 @@ type CompactContextType = {
   rateMessage: ({ rate, messageId }: { rate: "1" | "0"; messageId: any }) => void;
   unseenCount: number;
   clearSession: () => any;
+  leadTempMessage: string;
+  setLeadTempMessage: React.Dispatch<React.SetStateAction<string>>;
+  leadPending: boolean;
+  setLeadPending: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const CompactContext = React.createContext<CompactContextType>({} as CompactContextType);
@@ -23,6 +28,7 @@ export const useCompactChatbot = () => React.useContext(CompactContext);
 
 export default function CompactChatbotProvider({ children }: { children: React.ReactNode }) {
   const { chatbotPopup, widgetUid, chatbotUid, socketState, visitorUid } = useChatbot();
+  const { setting } = useWidget();
 
   /**
    * CONFIG
@@ -49,6 +55,23 @@ export default function CompactChatbotProvider({ children }: { children: React.R
     setMessages,
     setUnseenCount,
   });
+
+  /**
+   * LEAD
+   */
+  const [leadTempMessage, setLeadTempMessage] = useState("");
+  const [leadPending, setLeadPending] = useState(false);
+
+  useEffect(() => {
+    const stored = StorageManager.getStorage(widgetUid);
+
+    if (!stored?.leadSubmitted) {
+      console.log("stored", stored, setting);
+      if (setting?.enable_widget_form) {
+        setLeadPending(true);
+      }
+    }
+  }, [setting, widgetUid]);
 
   /**
    * EXTRA
@@ -227,6 +250,10 @@ export default function CompactChatbotProvider({ children }: { children: React.R
         rateMessage,
         unseenCount,
         clearSession,
+        leadTempMessage,
+        setLeadTempMessage,
+        leadPending,
+        setLeadPending,
       }}
     >
       {children}

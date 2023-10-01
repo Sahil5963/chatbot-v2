@@ -12,7 +12,7 @@ export default function SocialMediaBtns({ items = [] }: { items?: WidgetSocialIt
             key={i.link}
             className="ygpt-flex  ygpt-items-center ygpt-justify-center ygpt-h-[38px] ygpt-aspect-square ygpt-overflow-hidden  ygpt-rounded-full  hover:ygpt-opacity-100 ygpt-transition-all hover:ygpt-scale-110 "
           >
-            <img src={`/assets/svg/${i.type}.svg`} className="ygpt-h-[32px]" />
+            <img src={`https://assets.yourgpt.ai/images/social/${i.type}.svg`} className="ygpt-h-[32px]" />
           </a>
         );
       })}

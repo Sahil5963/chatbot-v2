@@ -14,7 +14,7 @@ export type SessionMessageItem = {
   id?: number;
   message?: string;
   // type: number;
-  // seen: string;
+  seen?: string;
   // createdAt: string;
 };
 

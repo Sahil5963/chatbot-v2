@@ -3,11 +3,13 @@ import TextareaAutosize from "react-textarea-autosize";
 import { customDebounce } from "../utils/helper";
 import SendIcon from "./icons/SendIcon";
 import { widgetUi } from "../utils/constants/ui";
+import { useWidget } from "../context/WidgetContext";
 
 export default function ChatActionBar({ notifyTyping, sendMessage }: { notifyTyping: (isTyping: boolean) => void; sendMessage: (text: string) => void }) {
   const [text, setText] = useState("");
   const inputRef = useRef(null as HTMLTextAreaElement | null);
   const interacted = useRef(false);
+  const { layout } = useWidget();
 
   const [isTyping, setIsTyping] = useState(false);
 
@@ -54,9 +56,12 @@ export default function ChatActionBar({ notifyTyping, sendMessage }: { notifyTyp
       />
 
       <div
-        className={` ygpt-cursor-pointer hover:ygpt-bg-blue-100 ygpt-text-blue-600  ygpt-h-[38px] ygpt-aspect-square ygpt-rounded-full ygpt-overflow-hidden ygpt-flex ygpt-justify-center ygpt-items-center ygpt-absolute ygpt-right-1  ${
+        className={` ygpt-cursor-pointer hover:ygpt-bg-blue-100   ygpt-h-[38px] ygpt-aspect-square ygpt-rounded-full ygpt-overflow-hidden ygpt-flex ygpt-justify-center ygpt-items-center ygpt-absolute ygpt-right-1  ${
           text ? "ygpt-scale-100 ygpt-opacity-100" : "ygpt-scale-[0.5] ygpt-opacity-0 ygpt-pointer-events-none"
         } ygpt-transition-all ygpt-ease-in-quint`}
+        style={{
+          color: layout?.colors.primary,
+        }}
         onClick={() => {
           sendMessage(text);
           setText("");

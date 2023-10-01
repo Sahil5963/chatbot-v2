@@ -31,7 +31,7 @@ export const WIDGET_COLORS: WidgetColorsD[] = [
 ];
 
 export const YOUR_GPT_LAYOUT: WidgetLayoutD = {
-  type: "tab",
+  type: "compact",
   version: 1,
   defaultQuestions: {},
   externalLinks: [

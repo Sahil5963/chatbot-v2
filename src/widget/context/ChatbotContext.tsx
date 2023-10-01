@@ -153,6 +153,24 @@ export default function ChatbotProvider({ children, widgetPlace }: { children: R
     // });
   }, []);
 
+  useEffect(() => {
+    const handleLocationChange = () => {
+      if (visitorUid) {
+        socketManager.navigation({
+          page_title: document.title,
+          url: window.location.href,
+          visitor_uid: visitorUid,
+        });
+      }
+    };
+
+    window.addEventListener("popstate", handleLocationChange);
+
+    return () => {
+      window.removeEventListener("popstate", handleLocationChange);
+    };
+  }, [visitorUid]);
+
   /**
    * SOCKET HANDLES
    */

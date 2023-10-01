@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getChatbotSettingApi } from "../../network/api";
+import { getChatbotSettingApi } from "../network/api";
 import { ChatbotSettingD } from "../types";
 import { YOUR_GPT_LAYOUT } from "../utils/constants";
 
@@ -18,7 +18,7 @@ export const useSettings = ({ chatbotUid, widgetUid }: { chatbotUid: string; wid
         setLoading(false);
         setChatbotSettings({
           ...res.data,
-          layout: YOUR_GPT_LAYOUT,
+          layout: res.data?.layout || YOUR_GPT_LAYOUT,
         });
       } catch (err) {
         setLoading(false);

@@ -8,6 +8,7 @@ export enum SocketEmitE {
   //NEW
   createVisitor = "chatbot:visitor:create",
   joinVisitor = "chatbot:visitor:join",
+  navigation = "chatbot:navigation:create",
 }
 export enum SocketListenE {
   sessionCreated = "chatbot:session:created",

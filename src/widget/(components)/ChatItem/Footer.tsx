@@ -1,15 +1,15 @@
-import { HiThumbDown, HiThumbUp } from "react-icons/hi";
-import { styled } from "styled-components";
+// import { HiThumbDown, HiThumbUp } from "react-icons/hi";
+// import { styled } from "styled-components";
 import LearnMoreLinks from "./LearnMoreLinks";
-import { useChatbot } from "../../context/ChatbotContext";
-import { MessageD, RenderMessageItem } from "../../types/message";
-import { HIDE_FEEDBACK } from "../../utils/helper";
+// import { useChatbot } from "../../context/ChatbotContext";
+import { RenderMessageItem } from "../../types/message";
+// import { HIDE_FEEDBACK } from "../../utils/helper";
 
-export default function Footer({ message, rateMessage }: { message: RenderMessageItem; rateMessage: (data: { messageId: number; rate: "1" | "0" }) => any }) {
-  const { isFullPage } = useChatbot();
+export default function Footer({ message }: { message: RenderMessageItem; rateMessage?: (data: { messageId: number; rate: "1" | "0" }) => any }) {
+  // const { isFullPage } = useChatbot();
 
-  const rated = message.rate;
-  const message_id = message.id;
+  // const rated = message.rate;
+  // const message_id = message.id;
   const links = message.links || [];
 
   if (message.from !== "assistant") {
@@ -18,7 +18,7 @@ export default function Footer({ message, rateMessage }: { message: RenderMessag
 
   return (
     <div className="ygpt-mt-2">
-      {message_id && message_id !== 0 ? (
+      {/* {message_id && message_id !== 0 ? (
         <div>
           {rated ? (
             <div>
@@ -38,7 +38,7 @@ export default function Footer({ message, rateMessage }: { message: RenderMessag
                 <Btn
                   className="like"
                   onClick={() => {
-                    rateMessage({ messageId: message_id, rate: "1" });
+                    rateMessage && rateMessage({ messageId: message_id, rate: "1" });
                   }}
                 >
                   <HiThumbUp />
@@ -46,7 +46,7 @@ export default function Footer({ message, rateMessage }: { message: RenderMessag
                 <Btn
                   className="dislike"
                   onClick={() => {
-                    rateMessage({ messageId: message_id, rate: "0" });
+                    rateMessage && rateMessage({ messageId: message_id, rate: "0" });
                   }}
                 >
                   <HiThumbDown />
@@ -55,10 +55,10 @@ export default function Footer({ message, rateMessage }: { message: RenderMessag
             )
           )}
         </div>
-      ) : null}
+      ) : null} */}
 
       {links.length > 0 && (
-        <div className="ygpt-mt-2">
+        <div className="">
           <LearnMoreLinks links={links} />
         </div>
       )}
@@ -66,46 +66,46 @@ export default function Footer({ message, rateMessage }: { message: RenderMessag
   );
 }
 
-const Btn = styled.div`
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  height: 32px;
-  width: 32px;
-  border-radius: 120px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: all 0.2s;
+// const Btn = styled.div`
+//   border: 1px solid rgba(0, 0, 0, 0.12);
+//   height: 32px;
+//   width: 32px;
+//   border-radius: 120px;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   transition: all 0.2s;
 
-  &.active {
-    &.like {
-      background: #08ac0829;
-      color: #067b06;
-    }
-    &.dislike {
-      color: #d22121;
-      background-color: #ff000014;
-    }
-  }
+//   &.active {
+//     &.like {
+//       background: #08ac0829;
+//       color: #067b06;
+//     }
+//     &.dislike {
+//       color: #d22121;
+//       background-color: #ff000014;
+//     }
+//   }
 
-  &:hover {
-    cursor: pointer;
-    &.like {
-      background: #08ac0829;
-      color: #067b06;
-    }
-    &.dislike {
-      color: #d22121;
-      background-color: #ff000014;
-    }
-  }
+//   &:hover {
+//     cursor: pointer;
+//     &.like {
+//       background: #08ac0829;
+//       color: #067b06;
+//     }
+//     &.dislike {
+//       color: #d22121;
+//       background-color: #ff000014;
+//     }
+//   }
 
-  svg {
-    font-size: 17px;
-  }
-`;
-const Btns = styled.div`
-  display: flex;
-  gap: 2px;
+//   svg {
+//     font-size: 17px;
+//   }
+// `;
+// const Btns = styled.div`
+//   display: flex;
+//   gap: 2px;
 
-  color: rgba(0, 0, 0, 0.4);
-`;
+//   color: rgba(0, 0, 0, 0.4);
+// `;

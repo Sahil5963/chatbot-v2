@@ -70,5 +70,5 @@ export default function TimeText({ time }: TimeTextProps) {
     };
   }, [time]);
 
-  return <div style={{ fontSize: 10, opacity: 0.8, whiteSpace: "nowrap" }}>{t}</div>;
+  return <div style={{ opacity: 0.8, whiteSpace: "nowrap" }}>{t}</div>;
 }

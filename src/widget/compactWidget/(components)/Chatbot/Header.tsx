@@ -1,12 +1,12 @@
 import { RiDeleteBin6Fill, RiExpandLeftLine, RiExpandRightLine } from "react-icons/ri";
 import { IoMdClose } from "react-icons/io";
-import { styled } from "styled-components";
 import { useIntl } from "react-intl";
 import { useChatbot } from "../../../context/ChatbotContext";
 import { useWidget } from "../../../context/WidgetContext";
 import ChatbotLogo from "../../../(components)/logos/Chatbot";
 import { YOUR_GPT_LAYOUT } from "../../../utils/constants";
 import { useCompactChatbot } from "../../context/CompactContext";
+import { IconBtn } from "../../../(components)/styles";
 
 export default function Header() {
   const { setExpanded, expanded, setChatbotPopup } = useChatbot();
@@ -19,7 +19,7 @@ export default function Header() {
     <div className="ygpt-px-2 ygpt-py-3 ygpt-flex ygpt-justify-between ygpt-items-center" style={{ background: layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary, color: layout?.colors.textOnPrimary }}>
       {/* LEFT  */}
       <div className="left ygpt-flex ygpt-gap-2 ygpt-items-center">
-        <button onClick={() => setExpanded((s) => !s)} className="ygpt-opacity-50 hover:ygpt-opacity-100 ygpt-transition-all">
+        <button onClick={() => setExpanded((s) => !s)} className="ygpts-expander ygpt-opacity-50 hover:ygpt-opacity-100 ygpt-transition-all">
           {expanded ? <RiExpandRightLine size={20} /> : <RiExpandLeftLine size={20} />}
         </button>
 
@@ -39,30 +39,13 @@ export default function Header() {
           </Btn>
           <LanguagePopup open={languagePopup} onClose={() => {}} />
         </div> */}
-        <Btn onClick={() => clearSession()} className="" bg={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary} color={layout?.colors.textOnPrimary || YOUR_GPT_LAYOUT.colors.textOnPrimary}>
+        <IconBtn onClick={() => clearSession()} className="" color={layout?.colors.textOnPrimary || YOUR_GPT_LAYOUT.colors.textOnPrimary}>
           <RiDeleteBin6Fill size={20} />
-        </Btn>
-        <Btn onClick={() => setChatbotPopup(false)} className="" bg={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary} color={layout?.colors.textOnPrimary || YOUR_GPT_LAYOUT.colors.textOnPrimary}>
+        </IconBtn>
+        <IconBtn onClick={() => setChatbotPopup(false)} className="" color={layout?.colors.textOnPrimary || YOUR_GPT_LAYOUT.colors.textOnPrimary}>
           <IoMdClose size={20} />
-        </Btn>
+        </IconBtn>
       </div>
     </div>
   );
 }
-
-const Btn = styled.button<{ color: string; bg: string }>`
-  background: ${(p) => p.color + "00"};
-  color: ${(p) => p.color + "a1"};
-  height: 38px;
-  aspect-ratio: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 120px;
-  transition: all 0.2s;
-
-  &:hover {
-    background: ${(p) => p.color + "20"};
-    color: ${(p) => p.color + "ff"};
-  }
-`;

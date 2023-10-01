@@ -21,8 +21,15 @@ export default function Home() {
 
         <div className="ygpt-flex ygpt-gap-2 ygpt-flex-wrap ygpt-mb-4">
           {layout?.defaultQuestions["en"]?.map((i, index) => {
+            if (!i.label || !i.question) return null;
             return (
-              <MessageItem color={layout?.colors.primary} key={index}>
+              <MessageItem
+                color={layout?.colors.primary}
+                key={index}
+                onClick={() => {
+                  sendQueryFromOutside(i.question);
+                }}
+              >
                 {i.label}
               </MessageItem>
             );
@@ -44,7 +51,8 @@ export default function Home() {
             onChange={(e: any) => setText(e.target.value)}
           />
           <div
-            className={` ygpt-cursor-pointer hover:ygpt-bg-blue-100 ygpt-text-blue-600  ygpt-h-[38px] ygpt-aspect-square ygpt-rounded-full ygpt-overflow-hidden ygpt-flex ygpt-justify-center ygpt-items-center ygpt-absolute ygpt-right-1  ${
+            style={{ color: layout?.colors.primary }}
+            className={` ygpt-cursor-pointer hover:ygpt-bg-blue-100   ygpt-h-[38px] ygpt-aspect-square ygpt-rounded-full ygpt-overflow-hidden ygpt-flex ygpt-justify-center ygpt-items-center ygpt-absolute ygpt-right-1  ${
               text ? "ygpt-scale-100 ygpt-opacity-100" : "ygpt-scale-[0.5] ygpt-opacity-0 ygpt-pointer-events-none"
             } ygpt-transition-all ygpt-ease-in-quint`}
             onClick={() => {
@@ -58,18 +66,18 @@ export default function Home() {
 
         {/* LINKS  */}
 
-        <div className="ygpt-flex ygpt-flex-col ygpt-gap-1">
+        <div className="ygpt-flex ygpt-flex-col ygpt-gap-2">
           {layout?.externalLinks.map((i) => {
             if (i.type === "link") {
               return (
-                <Link color={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary} key={i.link} href={i.link}>
+                <Link target="_blank" color={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary} key={i.link} href={i.link}>
                   {i.text}
                 </Link>
               );
             } else if (i.type === "card") {
               return (
-                <Annoucement className="item">
-                  <img src={i.image} />
+                <Annoucement href={i.link || "#"} target="_blank" className="item">
+                  {i.image && <img src={i.image} />}
                   <p>{i.text}</p>
                 </Annoucement>
               );
@@ -85,6 +93,7 @@ export default function Home() {
 
 const Content = styled.div`
   margin-top: 30%;
+  padding-bottom: 2rem;
 
   h4 {
     font-size: 1.4rem;
@@ -101,6 +110,7 @@ const MessageItem = styled.div<{ color: string }>`
   color: ${(props) => props.color};
   padding: 4px 12px;
   font-size: 14px;
+  cursor: pointer;
 `;
 
 const TextArea = styled(AutoResize)<{ color?: string }>`
@@ -139,7 +149,7 @@ const Link = styled.a<{ color: string }>`
   font-size: 14px;
 `;
 
-const Annoucement = styled.div`
+const Annoucement = styled.a`
   border-radius: 12px;
   overflow: hidden;
   position: relative;

@@ -4,8 +4,10 @@ import { useChatbot } from "../../context/ChatbotContext";
 import { MessageEventResponse, MessagesComponseEventResponse } from "../../types/socket";
 import socketManager from "../../utils/socket";
 import { ApiRes } from "../../types/enum";
-import { getSessionsApi } from "../../../network/api";
+import { getSessionsApi } from "../../network/api";
 import { SessionItemApiD } from "../../types/session";
+import { StorageManager } from "../../utils/storage";
+import { useWidget } from "../../context/WidgetContext";
 
 type TabProviderType = {
   sessions: SessionItemApiD[];
@@ -16,6 +18,10 @@ type TabProviderType = {
   sessionsError: string;
   setSessions: React.Dispatch<React.SetStateAction<SessionItemApiD[]>>;
   fetchSessions: (refresh?: boolean) => void;
+  leadTempMessage: string;
+  setLeadTempMessage: React.Dispatch<React.SetStateAction<string>>;
+  leadPending: boolean;
+  setLeadPending: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const LIMIT = 20;
@@ -26,7 +32,8 @@ export const useTabChatbot = () => useContext(TabContext);
 
 export default function TabProvider({ children }: { children: ReactNode }) {
   const { navigate } = useTabUiChatbot();
-  const { socketConnected, visitorUid } = useChatbot();
+  const { socketConnected, visitorUid, widgetUid } = useChatbot();
+  const { setting } = useWidget();
 
   const [sessions, setSessions] = useState<SessionItemApiD[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(false);
@@ -77,9 +84,9 @@ export default function TabProvider({ children }: { children: ReactNode }) {
     [page, visitorUid]
   );
 
-  const loadMoreConversations = useCallback(async () => {
-    setPage((p) => p + 1);
-  }, []);
+  // const loadMoreConversations = useCallback(async () => {
+  //   setPage((p) => p + 1);
+  // }, []);
 
   useEffect(() => {
     fetchSessions();
@@ -139,6 +146,23 @@ export default function TabProvider({ children }: { children: ReactNode }) {
     navigate("chatScreen", { query });
   };
 
+  /**
+   * LEAD
+   */
+  const [leadTempMessage, setLeadTempMessage] = useState("");
+  const [leadPending, setLeadPending] = useState(false);
+
+  useEffect(() => {
+    const stored = StorageManager.getStorage(widgetUid);
+
+    if (!stored?.leadSubmitted) {
+      console.log("stored", stored, setting);
+      if (setting?.enable_widget_form) {
+        setLeadPending(true);
+      }
+    }
+  }, [setting, widgetUid]);
+
   return (
     <TabContext.Provider
       value={{
@@ -150,6 +174,10 @@ export default function TabProvider({ children }: { children: ReactNode }) {
         sessionsError,
         setSessions,
         fetchSessions,
+        leadTempMessage,
+        setLeadTempMessage,
+        leadPending,
+        setLeadPending,
       }}
     >
       {children}

@@ -28,7 +28,7 @@ export default function ChatbotFrame({ children }: { children: React.ReactNode }
     <>
       {/* <AnimatePresence> */}
       <Root
-        className={`ygpt-frame ${chatbotPopup ? "show" : ""} ${expanded ? "big" : ""} ${chatbotPopup ? "show" : "hide"}`}
+        className={` ygpts-frame ${chatbotPopup ? "show" : ""} ${expanded ? "big" : ""} ${chatbotPopup ? "show" : "hide"}`}
         variants={frameVariants}
         initial="hide"
         animate={chatbotPopup ? "show" : "hide"}

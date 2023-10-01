@@ -9,28 +9,33 @@ import { IconBtn, ScrollDiv } from "../../../../(components)/styles";
 import ChatItem from "../../../../(components)/ChatItem";
 import ChatActionBar from "../../../../(components)/ChatActionBar";
 import { useWidget } from "../../../../context/WidgetContext";
-import { MessageD, MessagesLoadingStatus, RenderMessageItem } from "../../../../types/message";
+import { MessageD, MessagesLoadingStatus } from "../../../../types/message";
 import { YOUR_GPT_LAYOUT } from "../../../../utils/constants";
 import { SocketListenE } from "../../../../types/enum/socket";
 import socketManager from "../../../../utils/socket";
 import { MessagesComponseEventResponse, SessionData } from "../../../../types/socket";
 import useHandleMessageReceived from "../../../../hooks/useReceivedMessageHandle";
 import { useChatbot } from "../../../../context/ChatbotContext";
-import { getSessionMessagesApi } from "../../../../../network/api";
+import { getSessionMessagesApi } from "../../../../network/api";
 import { ApiRes } from "../../../../types/enum";
 import { useTabChatbot } from "../../../context/TabContext";
-import { getRenderMessageItem } from "../../../../utils/helper";
+import { StorageManager } from "../../../../utils/storage";
+import Chatform from "../../../../(components)/ChatForm";
+import Spinner from "../../../../(components)/Spinner";
 
-// const LIMIT = 100;
+const LIMIT = 100;
 
 export default function Chat() {
   const { navigate, activeRoute, clearPrams } = useTabUiChatbot();
-  const { setSessions } = useTabChatbot();
+  const { leadTempMessage, leadPending, setLeadPending, setLeadTempMessage } = useTabChatbot();
   const { widgetUid, visitorUid, chatbotPopup } = useChatbot();
   const [messages, setMessages] = useState<MessageD[]>([]);
   const { layout } = useWidget();
   const [sessionData, setSessionData] = useState<SessionData | null>(null);
-  const [loadingStatus, setLoadingStatus] = useState<MessagesLoadingStatus>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, setLoadingStatus] = useState<MessagesLoadingStatus>(null);
+
+  const [loadingMessages, setLoadingMessages] = useState(false);
   const pendingQuery = useRef("");
 
   const [newChat, setNewChat] = useState(false);
@@ -55,9 +60,20 @@ export default function Chat() {
   }, [visitorUid, widgetUid]);
 
   const sendMessage = useCallback(
-    (message: string) => {
+    (message: string, ignoreLead = false) => {
       if (!message?.trim()) {
         return;
+      }
+
+      if (!ignoreLead) {
+        if (leadTempMessage) {
+          return;
+        }
+
+        if (leadPending) {
+          setLeadTempMessage(message);
+          return;
+        }
       }
 
       if (!sessionData) {
@@ -92,7 +108,7 @@ export default function Chat() {
         });
       }
     },
-    [sessionData, widgetUid, createSession]
+    [sessionData, widgetUid, createSession, leadTempMessage, leadPending, setLeadTempMessage]
   );
 
   useEffect(() => {
@@ -108,7 +124,6 @@ export default function Chat() {
       setNewChat(false);
     } else {
       setNewChat(true);
-
       if (activeRoute.params?.query) {
         pendingQuery.current = activeRoute.params?.query;
         createSession();
@@ -120,14 +135,19 @@ export default function Chat() {
     if (!sessionData?.session_uid) return;
 
     try {
+      setLoadingMessages(true);
       const res = await getSessionMessagesApi({
         session_uid: sessionData.session_uid,
+        limit: LIMIT,
+        page: 1,
       });
 
+      setLoadingMessages(false);
       if (res.type === ApiRes.SUCCESS) {
-        setMessages((s) => [...res.data.reverse(), ...s]);
+        setMessages(res.data);
       }
     } catch (err) {
+      setLoadingMessages(false);
       console.log("Err", err);
     }
   }, [sessionData]);
@@ -207,9 +227,29 @@ export default function Chat() {
     };
   }, [clearPrams]);
 
+  const onLeadSubmit = () => {
+    setLeadPending(false);
+    StorageManager.setStorage({
+      widgetUid: widgetUid,
+      leadSubmitted: true,
+    });
+    setLeadTempMessage("");
+    sendMessage(leadTempMessage, true);
+  };
+
   /**
-   * REF MANAGEMENT
+   * SCROLL MANAGE
    */
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const scrollToBottom = () => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  });
 
   return (
     <Root>
@@ -230,8 +270,9 @@ export default function Chat() {
         color={layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary}
         className="content ygpt-overflow-x-hidden   ygpt-overflow-y-auto ygpt-flex-1 ygpt-py-2 ygpt-flex ygpt-flex-col  ygpt-items-start ygpt-gap-3"
         style={{ transition: `scroll-behavior 0.5s ease-in-out` }}
+        ref={chatContainerRef}
       >
-        {messages.length === 0 && (
+        {newChat && (
           <>
             <ChatItem
               rateMessage={() => {}}
@@ -244,10 +285,32 @@ export default function Chat() {
             />
           </>
         )}
+
         {messages.map((i) => {
           return <ChatItem rateMessage={() => {}} key={i.localId || i.content?.message_id || i.id} message={i} />;
         })}
         {/* {loadingStatus && <>{loadingStatus === "loading" && <span>Loading.....</span>}</>} */}
+        {leadTempMessage && (
+          <>
+            <ChatItem
+              message={{
+                createdAt: null,
+                content: { message: leadTempMessage },
+                from: "user",
+                localId: "leadTempMessage",
+              }}
+            />
+            <div className="padX">
+              <Chatform onResize={() => {}} onSubmit={onLeadSubmit} />
+            </div>
+          </>
+        )}
+
+        {loadingMessages && (
+          <div style={{ color: layout?.colors.primary }} className="ygpt-flex ygpt-items-center ygpt-justify-center ygpt-py-8 ygpt-self-stretch">
+            <Spinner />
+          </div>
+        )}
       </ScrollDiv>
       {/* </Middle> */}
       <Bottom>
@@ -255,9 +318,7 @@ export default function Chat() {
           notifyTyping={(is) => {
             console.log(is);
           }}
-          sendMessage={(txt) => {
-            sendMessage(txt);
-          }}
+          sendMessage={sendMessage}
         />
       </Bottom>
     </Root>
