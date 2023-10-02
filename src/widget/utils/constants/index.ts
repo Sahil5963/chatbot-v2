@@ -1,7 +1,7 @@
 import { ChatbotSettingD } from "../../types";
 import { WidgetColorsD, WidgetLayoutD } from "../../types/layout/global";
 
-export const FULL_SCREEN_ROUTE = "https://chatbot-v2-henna.vercel.app";
+export const FULL_SCREEN_ROUTE = "chatbot-v2-henna.vercel.app";
 
 export const WIDGET_COLORS: WidgetColorsD[] = [
   {
