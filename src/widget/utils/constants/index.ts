@@ -36,32 +36,8 @@ export const YOUR_GPT_LAYOUT: WidgetLayoutD = {
   defaultQuestions: {},
   externalLinks: [
     {
-      type: "link",
-      link: "https://twitter.com/YourGPTAI",
-      text: "Yo yo honey singh",
-    },
-    {
-      type: "card",
-      link: "https://twitter.com/YourGPTAI",
-      text: "Yo yo honey singh",
-      image: "https://epicxplorer.com/_next/image?url=https%3A%2F%2Fassets.epicxplorer.com%2Ffeatured_image%2F1694693993.PNG&w=3840&q=75",
-    },
-    {
       type: "socialMedia",
-      socialItems: [
-        {
-          type: "discord",
-          link: "https://twitter.com/YourGPTAI",
-        },
-        {
-          type: "facebook",
-          link: "https://twitter.com/YourGPTAI",
-        },
-        {
-          type: "whatsapp",
-          link: "https://twitter.com/YourGPTAI",
-        },
-      ],
+      socialItems: [],
       visible: false,
     },
   ],
