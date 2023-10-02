@@ -31,29 +31,26 @@ export function playSound() {
   audio.play();
 }
 
-export const getChatbotCreds = (): { widgetUid: string; chatbotUid: string; fullPage: boolean } | null => {
+export const getChatbotCreds = (): { widgetUid: string; fullPage: boolean } | null => {
   if (import.meta.env.DEV) {
-    if (window.location.pathname.split("/").length === 3) {
+    if (window.location.pathname.split("/").length === 2) {
       return {
-        widgetUid: window.location.pathname.split("/")[2] || "",
-        chatbotUid: window.location.pathname.split("/")[1] || "",
+        widgetUid: window.location.pathname.split("/")[1] || "",
         fullPage: false,
       };
     }
   } else {
-    if (window.YOURGPT_PROJECT_UID && window.YOURGPT_WIDGET_UID) {
+    if (window.YOURGPT_WIDGET_UID) {
       return {
         widgetUid: window.YOURGPT_WIDGET_UID,
-        chatbotUid: window.YOURGPT_PROJECT_UID,
         fullPage: false,
       };
     }
     const currentPath = window?.location?.pathname;
     const domainName = window?.location?.hostname;
-    if (domainName === FULL_SCREEN_ROUTE && currentPath.split("/").length === 3) {
+    if (domainName === FULL_SCREEN_ROUTE && currentPath.split("/").length === 2) {
       return {
-        widgetUid: currentPath.split("/")[2] || "",
-        chatbotUid: currentPath.split("/")[1] || "",
+        widgetUid: currentPath.split("/")[1] || "",
         fullPage: true,
       };
     }

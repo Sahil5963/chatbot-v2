@@ -20,6 +20,7 @@ type CompactContextType = {
   setLeadTempMessage: React.Dispatch<React.SetStateAction<string>>;
   leadPending: boolean;
   setLeadPending: React.Dispatch<React.SetStateAction<boolean>>;
+  sessionData: SessionData | null;
 };
 
 const CompactContext = React.createContext<CompactContextType>({} as CompactContextType);
@@ -27,7 +28,7 @@ const CompactContext = React.createContext<CompactContextType>({} as CompactCont
 export const useCompactChatbot = () => React.useContext(CompactContext);
 
 export default function CompactChatbotProvider({ children }: { children: React.ReactNode }) {
-  const { chatbotPopup, widgetUid, socketState, visitorUid } = useChatbot();
+  const { chatbotPopup, widgetUid, socketState, visitorUid, socketConnected } = useChatbot();
   const { setting } = useWidget();
 
   /**
@@ -73,6 +74,15 @@ export default function CompactChatbotProvider({ children }: { children: React.R
     }
   }, [setting, widgetUid]);
 
+  const createSession = useCallback(() => {
+    if (visitorUid && widgetUid && socketConnected) {
+      socketManager.createSession({
+        widget_uid: widgetUid,
+        visitor_uid: visitorUid,
+      });
+    }
+  }, [visitorUid, widgetUid, socketConnected]);
+
   /**
    * EXTRA
    */
@@ -110,8 +120,14 @@ export default function CompactChatbotProvider({ children }: { children: React.R
       if (stored?.compactLayout?.messages && Array.isArray(stored.compactLayout.messages)) {
         setMessages(stored.compactLayout.messages);
       }
+
+      if (stored?.compactLayout?.sessionData) {
+        setSessionData(stored.compactLayout.sessionData);
+      } else {
+        createSession();
+      }
     }
-  }, [widgetUid]);
+  }, [createSession, widgetUid]);
 
   /**
    * SOCKET HANDLES
@@ -141,15 +157,6 @@ export default function CompactChatbotProvider({ children }: { children: React.R
     }
   }, []);
 
-  const createSession = useCallback(() => {
-    if (visitorUid && widgetUid) {
-      socketManager.createSession({
-        widget_uid: widgetUid,
-        visitor_uid: visitorUid,
-      });
-    }
-  }, [visitorUid, widgetUid]);
-
   const sendMessage = useCallback(
     (message: string) => {
       if (!message?.trim()) {
@@ -157,7 +164,7 @@ export default function CompactChatbotProvider({ children }: { children: React.R
       }
 
       if (!sessionData) {
-        createSession();
+        // createSession();
         setPendingMessageQueue((s) => [
           ...s,
           {
@@ -233,6 +240,8 @@ export default function CompactChatbotProvider({ children }: { children: React.R
   const clearSession = () => {
     setSessionData(null);
     setMessages([]);
+    setLeadTempMessage("");
+    setLeadPending(setting?.enable_widget_form ? true : false);
     StorageManager.clearCompactSession(widgetUid);
     socketManager.createSession({
       visitor_uid: visitorUid,
@@ -254,6 +263,7 @@ export default function CompactChatbotProvider({ children }: { children: React.R
         setLeadTempMessage,
         leadPending,
         setLeadPending,
+        sessionData,
       }}
     >
       {children}

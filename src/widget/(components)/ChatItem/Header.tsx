@@ -15,7 +15,7 @@ export default function Header({ message }: { message: RenderMessageItem }) {
           <div className="ygpt-flex ygpt-gap-2 ygpt-items-center">
             <div
               className="ygpt-rounded-full ygpt-h-[30px] ygpt-flex ygpt-items-center ygpt-justify-center ygpt-aspect-square "
-              style={{ background: setting?.logo ? "transparent" : layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary, color: setting?.widget_text_color || YOUR_GPT_LAYOUT.colors.textOnPrimary }}
+              style={{ background: setting?.logo ? "transparent" : layout?.colors.primary || YOUR_GPT_LAYOUT.colors.primary, color: layout?.colors.textOnPrimary || YOUR_GPT_LAYOUT.colors.textOnPrimary }}
             >
               {setting?.logo ? <img src={setting.logo} className="ygpt-h-full ygpt-w-full ygpt-object-cover" /> : <ChatbotLogo size={20} />}
             </div>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ChatbotSettingD, WidgetPlace } from "../types";
 import { MessageEventResponse, SocketState } from "../types/socket";
 import { StorageManager } from "../utils/storage";
@@ -20,7 +20,6 @@ type ChatbotContextType = {
   chatbotPopup: boolean;
   setChatbotPopup: React.Dispatch<React.SetStateAction<boolean>>;
   widgetUid: string;
-  chatbotUid: string;
   notifyTyping: (typing: boolean) => void;
   socketState: SocketState;
   expanded: boolean;
@@ -35,28 +34,9 @@ type ChatbotContextType = {
 
 const ChatbotContext = React.createContext<ChatbotContextType>({} as ChatbotContextType);
 
-export const useChatbot = () => React.useContext(ChatbotContext);
+export const useChatbot = () => useContext(ChatbotContext);
 
-export default function ChatbotProvider({ children, widgetPlace }: { children: React.ReactNode; widgetPlace: WidgetPlace }) {
-  /**
-   * CONFIG
-   */
-
-  const [chatbotUid] = useState(() => {
-    const p = getChatbotCreds();
-    if (p) {
-      return p.chatbotUid;
-    }
-    return "";
-  });
-  const [widgetUid] = useState(() => {
-    const p = getChatbotCreds();
-    if (p) {
-      return p.widgetUid;
-    }
-    return "";
-  });
-
+export default function ChatbotProvider({ children, widgetPlace, widgetUid }: { children: React.ReactNode; widgetPlace: WidgetPlace; widgetUid: string }) {
   const [isFullPage] = useState(() => {
     return getChatbotCreds()?.fullPage ? true : false;
   });
@@ -70,7 +50,7 @@ export default function ChatbotProvider({ children, widgetPlace }: { children: R
   const [socketState, setSocketState] = useState<SocketState>("idle");
   const [socketConnected, setSocketConnected] = useState(false);
 
-  const { chatbotSettings, loadingChatbotSettings } = useSettings({ chatbotUid, widgetUid });
+  const { chatbotSettings, loadingChatbotSettings } = useSettings({ widgetUid });
 
   const [expanded, setExpanded] = useState(false);
 
@@ -142,7 +122,6 @@ export default function ChatbotProvider({ children, widgetPlace }: { children: R
     //   return;
     // }
     // socketManager.sendCompose({
-    //   chatbot_uid: chatbotUid,
     //   from: "user",
     //   session_uid: sessionData?.session_uid,
     //   widget_uid: widgetUid,
@@ -214,7 +193,6 @@ export default function ChatbotProvider({ children, widgetPlace }: { children: R
   return (
     <ChatbotContext.Provider
       value={{
-        chatbotUid,
         widgetUid,
         chatbotSettings,
         isFullPage,

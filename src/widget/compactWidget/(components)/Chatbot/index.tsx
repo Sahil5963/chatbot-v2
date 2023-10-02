@@ -12,7 +12,7 @@ import { StorageManager } from "../../../utils/storage";
 import { useChatbot } from "../../../context/ChatbotContext";
 
 export default function Chatbot() {
-  const { messages, rateMessage, leadTempMessage, leadPending, setLeadPending, setLeadTempMessage, sendMessage } = useCompactChatbot();
+  const { messages, rateMessage, leadTempMessage, leadPending, setLeadPending, setLeadTempMessage, sendMessage, sessionData } = useCompactChatbot();
   const { widgetUid } = useChatbot();
 
   const { layout } = useWidget();
@@ -58,6 +58,8 @@ export default function Chatbot() {
   };
 
   const onLeadSubmit = () => {
+    console.log("onLeadSubmit");
+
     setLeadPending(false);
     StorageManager.setStorage({
       widgetUid: widgetUid,
@@ -97,7 +99,7 @@ export default function Chatbot() {
         })}
 
         {leadTempMessage && (
-          <div>
+          <>
             <ChatItem
               message={{
                 createdAt: null,
@@ -107,9 +109,9 @@ export default function Chatbot() {
               }}
             />
             <div className="padX ygpt-mt-2">
-              <Chatform onResize={() => {}} onSubmit={onLeadSubmit} />
+              <Chatform onResize={() => {}} onSubmit={onLeadSubmit} sessionDetail={sessionData} />
             </div>
-          </div>
+          </>
         )}
 
         <DefaultQuestions onSend={onMessage} />

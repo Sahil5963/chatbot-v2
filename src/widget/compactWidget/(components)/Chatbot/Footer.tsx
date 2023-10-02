@@ -3,7 +3,7 @@ import { HIDE_FOOTER } from "../../../utils/helper";
 import { useChatbot } from "../../../context/ChatbotContext";
 import ChatActionBar from "../../../(components)/ChatActionBar";
 export default function Footer({ onSend }: { onSend: (text: string) => void }) {
-  const { isFullPage, chatbotSettings, notifyTyping } = useChatbot();
+  const { isFullPage, notifyTyping } = useChatbot();
 
   return (
     <motion.div

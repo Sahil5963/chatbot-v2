@@ -12,7 +12,7 @@ import { YOUR_GPT_LAYOUT } from "./utils/constants";
 
 const Root = () => {
   const { isFullPage, widgetPlace } = useChatbot();
-  const { layout, loading } = useWidget();
+  const { layout, loading, setting } = useWidget();
 
   const content = useMemo(() => {
     if (layout?.type === "compact") {
@@ -23,7 +23,7 @@ const Root = () => {
       return <></>;
     }
   }, [layout?.type]);
-  if (loading) return null;
+  if (loading || !setting?.widget_uid) return null;
 
   return (
     <RootStyles layout={layout || YOUR_GPT_LAYOUT} className={`widgetPlace-${widgetPlace}`}>
@@ -41,11 +41,11 @@ const Root = () => {
   );
 };
 
-export default function Widget({ widgetPlace = "chatbot" }: { widgetPlace?: WidgetPlace }) {
+export default function Widget({ widgetPlace = "chatbot", widgetUid }: { widgetPlace?: WidgetPlace; widgetUid: string }) {
   return (
     <LanguageProvider>
       <div className="ygpt-chatbot">
-        <ChatbotProvider widgetPlace={widgetPlace}>
+        <ChatbotProvider widgetPlace={widgetPlace} widgetUid={widgetUid}>
           <WidgetProvider>
             <Root />
           </WidgetProvider>

@@ -7,11 +7,16 @@ import Select from "./Select";
 import InputField from "./InputField";
 import Phone from "./Phone";
 import { useWidget } from "../../context/WidgetContext";
-import { FaSpinner } from "react-icons/fa";
 import { FieldD, LeadTypes } from "../../types/lead";
+import { submitLeadFormApi } from "../../network/api";
+import { useChatbot } from "../../context/ChatbotContext";
+import { SessionData } from "../../types/socket";
+import { LuLoader2 } from "react-icons/lu";
+import { ApiRes } from "../../types/enum";
 
-export default function Chatform({ onResize, onSubmit }: { onResize: () => any; onSubmit: () => any }) {
+export default function Chatform({ onResize, sessionDetail, onSubmit }: { onResize: () => any; onSubmit: () => any; sessionDetail: SessionData | null }) {
   const { setting } = useWidget();
+  const { widgetUid, visitorUid } = useChatbot();
 
   const scrollRef = useRef<any>();
 
@@ -107,12 +112,24 @@ export default function Chatform({ onResize, onSubmit }: { onResize: () => any; 
         value: v,
       };
     });
-    setLoading(true);
 
     try {
-      console.log(f);
+      console.log(sessionDetail?.session_uid, visitorUid, widgetUid);
 
-      onSubmit();
+      if (!sessionDetail?.session_uid || !visitorUid || !widgetUid) return;
+
+      setLoading(true);
+
+      const res = await submitLeadFormApi({
+        data: JSON.stringify(f),
+        widget_uid: widgetUid,
+        visitor_uid: visitorUid,
+        session_uid: sessionDetail?.session_uid,
+      });
+
+      if (res.type === ApiRes.SUCCESS) {
+        onSubmit();
+      }
 
       setLoading(false);
       setSuccess(true);
@@ -120,7 +137,7 @@ export default function Chatform({ onResize, onSubmit }: { onResize: () => any; 
       setLoading(false);
       console.error("SUBMITERR", err);
     }
-  }, [data]);
+  }, [data, onSubmit, sessionDetail?.session_uid, visitorUid, widgetUid]);
 
   useEffect(() => {
     submitForm();
@@ -215,7 +232,7 @@ export default function Chatform({ onResize, onSubmit }: { onResize: () => any; 
       {loading && (
         <div className="loadingBox">
           <span className="spin">
-            <FaSpinner size={24} />
+            <LuLoader2 size={24} />
           </span>
           Saving
         </div>

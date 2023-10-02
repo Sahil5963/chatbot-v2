@@ -72,6 +72,7 @@ export default function Chat() {
 
         if (leadPending) {
           setLeadTempMessage(message);
+          createSession();
           return;
         }
       }
@@ -301,7 +302,7 @@ export default function Chat() {
               }}
             />
             <div className="padX">
-              <Chatform onResize={() => {}} onSubmit={onLeadSubmit} />
+              <Chatform onResize={() => {}} onSubmit={onLeadSubmit} sessionDetail={sessionData} />
             </div>
           </>
         )}

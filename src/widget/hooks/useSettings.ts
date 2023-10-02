@@ -3,7 +3,7 @@ import { getChatbotSettingApi } from "../network/api";
 import { ChatbotSettingD } from "../types";
 import { YOUR_GPT_LAYOUT } from "../utils/constants";
 
-export const useSettings = ({ chatbotUid, widgetUid }: { chatbotUid: string; widgetUid: string }) => {
+export const useSettings = ({ widgetUid }: { widgetUid: string }) => {
   const [chatbotSettings, setChatbotSettings] = useState<ChatbotSettingD | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -12,7 +12,6 @@ export const useSettings = ({ chatbotUid, widgetUid }: { chatbotUid: string; wid
       try {
         setLoading(true);
         const res = await getChatbotSettingApi({
-          project_uid: chatbotUid,
           widget_uid: widgetUid,
         });
         setLoading(false);
@@ -26,8 +25,8 @@ export const useSettings = ({ chatbotUid, widgetUid }: { chatbotUid: string; wid
       }
     };
 
-    if (widgetUid && chatbotUid) getSettings();
-  }, [widgetUid, chatbotUid]);
+    if (widgetUid) getSettings();
+  }, [widgetUid]);
 
   return { chatbotSettings, loadingChatbotSettings: loading };
 };

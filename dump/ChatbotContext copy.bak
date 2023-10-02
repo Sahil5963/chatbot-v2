@@ -30,7 +30,6 @@ type ChatbotContextType = {
   setChatbotPopup: React.Dispatch<React.SetStateAction<boolean>>;
   sessionData: SessionData | null;
   widgetUid: string;
-  chatbotUid: string;
   notifyTyping: (typing: boolean) => void;
   loadingStatus: LoadingStatus;
   clearSession: () => any;
@@ -51,13 +50,7 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
    * CONFIG
    */
 
-  const [chatbotUid] = useState(() => {
-    const p = getChatbotCreds();
-    if (p) {
-      return p.chatbotUid;
-    }
-    return "";
-  });
+
   const [widgetUid] = useState(() => {
     const p = getChatbotCreds();
     if (p) {
@@ -86,7 +79,7 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
 
   const [loadingStatus, setLoadingStatus] = useState<LoadingStatus>(null);
 
-  const { chatbotSettings } = useSettings({ chatbotUid, widgetUid });
+  const { chatbotSettings } = useSettings({  widgetUid });
 
   const [expanded, setExpanded] = useState(false);
 
@@ -155,7 +148,7 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
    */
 
   useEffect(() => {
-    if (widgetUid && chatbotUid) {
+    if (widgetUid ) {
       const stored = StorageManager.getStorage(widgetUid);
 
       if (stored?.sessionData) {
@@ -163,7 +156,6 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
       } else {
         setSocketState("creatingSession");
         socketManager.createSession({
-          chatbot_uid: chatbotUid,
           widget_uid: widgetUid,
           //TEMP
           device_type: "NA",
@@ -171,7 +163,7 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
         });
       }
     }
-  }, [widgetUid, chatbotUid]);
+  }, [widgetUid]);
 
   const notifyTyping = useCallback(
     (typing: boolean) => {
@@ -179,7 +171,6 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
         return;
       }
       socketManager.sendCompose({
-        chatbot_uid: chatbotUid,
         from: "user",
         session_uid: sessionData?.session_uid,
         widget_uid: widgetUid,
@@ -189,7 +180,7 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
         },
       });
     },
-    [sessionData, chatbotUid, widgetUid]
+    [sessionData, widgetUid]
   );
 
   /**
@@ -202,7 +193,6 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
       pendingMessageQueue.forEach((message) => {
         if (!message.content.message?.trim()) return;
         socketManager.sendMessage({
-          chatbot_uid: chatbotUid,
           widget_uid: widgetUid,
           message: message.content.message,
           flow_id: "",
@@ -214,7 +204,7 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
         setPendingMessageQueue((s) => s.filter((i) => i.content.message_id !== message.content.message_id));
       });
     }
-  }, [chatbotUid, pendingMessageQueue, widgetUid, sessionData]);
+  }, [pendingMessageQueue, widgetUid, sessionData]);
 
   const handleSessionCreated = useCallback((data: SessionData) => {
     setSessionData(data);
@@ -223,7 +213,6 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
   useEffect(() => {
     if (sessionData && !(socketState === "idle" || socketState === "error")) {
       socketManager.joinSession({
-        chatbot_uid: chatbotUid,
         session_uid: sessionData.session_uid,
         user: {
           name: "visitor" + getVisitorName(sessionData.id),
@@ -234,7 +223,7 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
         },
       });
     }
-  }, [sessionData, chatbotUid, socketState]);
+  }, [sessionData, socketState]);
 
   const handleMessageReceived = useCallback(
     (data: MessageEventResponse) => {
@@ -283,7 +272,6 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
             setLoadingStatus(null);
 
             socketManager.sendCompose({
-              chatbot_uid: chatbotUid,
               from: "assistant",
               session_uid: sessionData.session_uid,
               widget_uid: widgetUid,
@@ -328,7 +316,7 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
         });
       }
     },
-    [messages, sessionData, chatbotUid, widgetUid, tabActive, chatbotPopup]
+    [messages, sessionData,  widgetUid, tabActive, chatbotPopup]
   );
 
   const handleMessageCompose = useCallback((data: MessagesComponseEventResponse) => {
@@ -376,7 +364,6 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
 
     if (sessionData && message?.trim()) {
       socketManager.sendMessage({
-        chatbot_uid: chatbotUid,
         widget_uid: widgetUid,
         message: message,
         flow_id: "",
@@ -409,7 +396,6 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
     StorageManager.clearStorage(widgetUid);
     setSocketState("resettingSession");
     socketManager.createSession({
-      chatbot_uid: chatbotUid,
       widget_uid: widgetUid,
       //TEMP
       device_type: "NA",
@@ -420,7 +406,6 @@ export default function ChatbotProvider({ children }: { children: React.ReactNod
   return (
     <ChatbotContext.Provider
       value={{
-        chatbotUid,
         widgetUid,
         sessionData,
         messages,
