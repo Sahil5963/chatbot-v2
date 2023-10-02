@@ -13,7 +13,7 @@ if (oldConfigStr) {
   scriptPath = ENDPOINT + "/old/chatbot.back.js";
 } else {
   //NEW SCRIPT
-  const widgetCode = JSON.parse(scriptTag.getAttribute("widget"));
+  const widgetCode = scriptTag.getAttribute("widget");
   if (widgetCode) {
     window.YOURGPT_WIDGET_UID = widgetCode;
     scriptPath = ENDPOINT + "/chatbot.js";
