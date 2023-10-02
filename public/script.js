@@ -5,8 +5,9 @@ const scriptTag = document.getElementById("yourgpt-chatbot");
 let scriptPath = "";
 
 //OLD SCRIPT
-const config = JSON.parse(scriptTag.getAttribute("data-config"));
-if (config) {
+const oldConfigStr = scriptTag.getAttribute("data-config");
+if (oldConfigStr) {
+  const config = JSON.parse(oldConfigStr || "{}");
   window.YOURGPT_WIDGET_UID = config.YOURGPT_WIDGET_UID;
   window.YOURGPT_PROJECT_UID = config.YOURGPT_CHATBOT_UID;
   scriptPath = ENDPOINT + "/old/chatbot.back.js";
