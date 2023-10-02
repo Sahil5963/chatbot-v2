@@ -48,6 +48,9 @@ export const getChatbotCreds = (): { widgetUid: string; fullPage: boolean } | nu
     }
     const currentPath = window?.location?.pathname;
     const domainName = window?.location?.hostname;
+
+    console.log("currentPath", domainName, FULL_SCREEN_ROUTE, currentPath.split("/").length);
+
     if (domainName === FULL_SCREEN_ROUTE && currentPath.split("/").length === 2) {
       return {
         widgetUid: currentPath.split("/")[1] || "",
